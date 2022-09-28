@@ -36,7 +36,7 @@ function consentwow_add_main_menu() {
 	$capability    = 'manage_options';
 	$menu_slug     = WP_CONSENTWOW_SLUG;
 	$callback      = 'consentwow_admin_api_token_settings_page';
-	$icon_url      = 'none';
+	$icon_url      = consentwow_admin_menu_icon();
 
 	add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $callback, $icon_url );
 }
@@ -46,6 +46,14 @@ function consentwow_add_main_menu() {
  */
 function consentwow_admin_api_token_settings_page() {
 	require_once plugin_dir_path( __FILE__ ) . 'pages/api-token-settings-page.php';
+}
+
+/**
+ * Admin menu icon.
+ */
+function consentwow_admin_menu_icon() {
+	$file_contents = file_get_contents( plugin_dir_path( __FILE__ ) . 'static/images/icon-cookiewow.b64' );
+	return "data:image/svg+xml;base64,$file_contents";
 }
 
 add_action( 'admin_menu', 'consentwow_admin_menu' );
