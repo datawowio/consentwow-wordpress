@@ -23,6 +23,55 @@ define( 'WP_CONSENTWOW_FORM_EDIT_SLUG', 'consentwow-form-edit.php' );
 define( 'WP_CONSENTWOW_FILE', __FILE__ );
 
 /**
+ * Initialize admin settings. Mostly just register settings section for
+ * API Token and Form.
+ */
+function consentwow_admin_init() {
+	consentwow_admin_register_api_token();
+}
+
+/**
+ * Register settings section for API Token.
+ */
+function consentwow_admin_register_api_token() {
+	$option_group = 'consentwow_options_group';
+	$option_name  = 'consentwow_api_token';
+	$args         = array(
+		'type' => 'string',
+		'sanitize_callback' => 'sanitize_text_field',
+		'default' => null,
+	);
+	register_setting( $option_group, $option_name, $args );
+
+	$id       = 'consentwow-api-token-settings';
+	$title    = '';
+	$callback = '';
+	$page     = WP_CONSENTWOW_SLUG;
+	add_settings_section( $id, $title, $callback, $page );
+
+	$id       = 'consentwow_api_token';
+	$title    = 'API Token';
+	$callback = 'consentwow_api_token_settings_fields';
+	$page     = WP_CONSENTWOW_SLUG;
+	$section  = 'consentwow-api-token-settings';
+	$args     = array(
+		'label_for' => 'consentwow_api_token',
+		'class' => 'consentwow-api-token-input',
+	);
+	add_settings_field( $id, $title, $callback, $page, $section, $args );
+}
+
+/**
+ * Display an input for API Token
+ */
+function consentwow_api_token_settings_fields() {
+	$api_token = get_option( 'consentwow_api_token' );
+?>
+<input type="text" id="consentwow_api_token" name="consentwow_api_token" class="regular-text" value="<?php echo $api_token ?>" />
+<?php
+}
+
+/**
  * Add admin menu.
  */
 function consentwow_admin_menu() {
@@ -142,5 +191,6 @@ function consentwow_settings_action_links( $actions ) {
 	return $actions;
 }
 
+add_action( 'admin_init', 'consentwow_admin_init' );
 add_action( 'admin_menu', 'consentwow_admin_menu' );
 add_filter( 'plugin_action_links_' . plugin_basename( WP_CONSENTWOW_FILE ), 'consentwow_settings_action_links' );
