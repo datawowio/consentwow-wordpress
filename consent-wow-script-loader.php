@@ -34,7 +34,7 @@ function consentwow_admin_menu() {
 function consentwow_add_main_menu() {
 	$page_title    = 'API Token Settings - Consent Wow';
 	$menu_title    = 'Consent Wow';
-	$submenu_title = 'API Token Settings';
+	$submenu_title = 'Settings';
 	$capability    = 'manage_options';
 	$menu_slug     = WP_CONSENTWOW_SLUG;
 	$callback      = 'consentwow_admin_api_token_settings_page';
@@ -86,7 +86,7 @@ function consentwow_admin_form_list_page() {
 function consentwow_add_new_form_page() {
 	$parent_slug = WP_CONSENTWOW_SLUG;
 	$page_title  = 'Create a new Form - Consent Wow';
-	$menu_title  = 'Add new form';
+	$menu_title  = 'Add New';
 	$capability  = 'manage_options';
 	$menu_slug   = $parent_slug . '-new-form';
 	$callback    = 'consentwow_admin_new_form_page';
