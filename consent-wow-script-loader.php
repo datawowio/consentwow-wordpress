@@ -45,7 +45,7 @@ function consentwow_add_main_menu() {
  * Display API token settings page.
  */
 function consentwow_admin_api_token_settings_page() {
-	echo 'API Token';
+	require_once plugin_dir_path( __FILE__ ) . 'pages/api-token-settings-page.php';
 }
 
 add_action( 'admin_menu', 'consentwow_admin_menu' );
