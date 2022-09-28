@@ -57,6 +57,8 @@ function consentwow_admin_api_token_settings_page() {
 
 /**
  * Admin menu icon.
+ *
+ * @return String URL of icon
  */
 function consentwow_admin_menu_icon() {
 	$file_contents = file_get_contents( plugin_dir_path( __FILE__ ) . 'static/images/icon-cookiewow.b64' );
@@ -131,6 +133,8 @@ function consentwow_admin_form_edit_page() {
  * Link to the configuration page of the plugin & documentation
  *
  * @param string[] $actions An array of plugin action links.
+ *
+ * @return string[] $actions An array of plugin action links including a link to settings page.
  */
 function consentwow_settings_action_links( $actions ) {
 	array_unshift( $actions, sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=' . WP_CONSENTWOW_SLUG ), __( 'Settings', 'consentwow' ) ) );
