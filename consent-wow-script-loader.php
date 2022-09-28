@@ -18,3 +18,34 @@
 define( 'WP_CONSENTWOW_VERSION', '1.0.0' );
 define( 'WP_CONSENTWOW_SLUG', 'consentwow-settings' );
 define( 'WP_CONSENTWOW_FILE', __FILE__ );
+
+/**
+ * Add admin menu.
+ */
+function consentwow_admin_menu() {
+	consentwow_add_main_menu();
+}
+
+/**
+ * Add main menu of Consent Wow settings.
+ */
+function consentwow_add_main_menu() {
+	$page_title    = 'API Token Settings - Consent Wow';
+	$menu_title    = 'Consent Wow';
+	$submenu_title = 'API Token Settings';
+	$capability    = 'manage_options';
+	$menu_slug     = WP_CONSENTWOW_SLUG;
+	$callback      = 'consentwow_admin_api_token_settings_page';
+	$icon_url      = 'none';
+
+	add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $callback, $icon_url );
+}
+
+/**
+ * Display API token settings page.
+ */
+function consentwow_admin_api_token_settings_page() {
+	echo 'API Token';
+}
+
+add_action( 'admin_menu', 'consentwow_admin_menu' );
