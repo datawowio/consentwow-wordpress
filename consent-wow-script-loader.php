@@ -101,4 +101,16 @@ function consentwow_admin_new_form_page() {
 	require_once plugin_dir_path( __FILE__ ) . 'pages/new-form-page.php';
 }
 
+/**
+ * Link to the configuration page of the plugin & documentation
+ *
+ * @param string[] $actions An array of plugin action links.
+ */
+function consentwow_settings_action_links( $actions ) {
+	array_unshift( $actions, sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=' . WP_CONSENTWOW_SLUG ), __( 'Settings', 'consentwow' ) ) );
+
+	return $actions;
+}
+
 add_action( 'admin_menu', 'consentwow_admin_menu' );
+add_filter( 'plugin_action_links_' . plugin_basename( WP_CONSENTWOW_FILE ), 'consentwow_settings_action_links' );
