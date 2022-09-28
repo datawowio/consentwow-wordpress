@@ -19,6 +19,7 @@ define( 'WP_CONSENTWOW_VERSION', '1.0.0' );
 define( 'WP_CONSENTWOW_SLUG', 'consentwow-settings.php' );
 define( 'WP_CONSENTWOW_FORM_LIST_SLUG', 'consentwow-form-list.php' );
 define( 'WP_CONSENTWOW_FORM_NEW_SLUG', 'consentwow-form-new.php' );
+define( 'WP_CONSENTWOW_FORM_EDIT_SLUG', 'consentwow-form-edit.php' );
 define( 'WP_CONSENTWOW_FILE', __FILE__ );
 
 /**
@@ -28,6 +29,7 @@ function consentwow_admin_menu() {
 	consentwow_add_main_menu();
 	consentwow_add_form_list_page();
 	consentwow_add_form_new_page();
+	consentwow_add_form_edit_page();
 }
 
 /**
@@ -101,6 +103,28 @@ function consentwow_add_form_new_page() {
  */
 function consentwow_admin_form_new_page() {
 	require_once plugin_dir_path( __FILE__ ) . 'pages/form-new-page.php';
+}
+
+
+/**
+ * Add submenu for Edit Form page.
+ */
+function consentwow_add_form_edit_page() {
+	$parent_slug = null;
+	$page_title  = 'Edit a Form - Consent Wow';
+	$menu_title  = 'Edit Form';
+	$capability  = 'manage_options';
+	$menu_slug   = WP_CONSENTWOW_FORM_EDIT_SLUG;
+	$callback    = 'consentwow_admin_form_edit_page';
+
+	add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $callback );
+}
+
+/**
+ * Display Edit a Form page.
+ */
+function consentwow_admin_form_edit_page() {
+	require_once plugin_dir_path( __FILE__ ) . 'pages/form-edit-page.php';
 }
 
 /**
