@@ -205,7 +205,15 @@ function consentwow_settings_action_links( $actions ) {
 	return $actions;
 }
 
+/**
+ * Uninstall the plugin.
+ */
+function consentwow_uninstall() {
+	delete_option( 'consentwow_api_token' );
+}
+
 add_action( 'admin_init', 'consentwow_admin_init' );
 add_action( 'admin_menu', 'consentwow_admin_menu' );
 add_action( 'admin_notices', 'consentwow_admin_notices' );
 add_filter( 'plugin_action_links_' . plugin_basename( WP_CONSENTWOW_FILE ), 'consentwow_settings_action_links' );
+register_uninstall_hook( __FILE__, 'consentwow_uninstall' );
