@@ -177,6 +177,22 @@ function consentwow_admin_form_edit_page() {
 }
 
 /**
+ * Display a notification when an error occurred in updating settings.
+ */
+function consentwow_admin_notices() {
+	if ( $_GET['settings-updated'] && empty( get_settings_errors( WP_CONSENTWOW_SLUG ) ) ) {
+		add_settings_error(
+			WP_CONSENTWOW_SLUG,
+			'settings-notice',
+			__( 'Settings Updated', 'consentwow' ),
+			'success',
+		);
+	}
+
+	settings_errors( WP_CONSENTWOW_SLUG );
+}
+
+/**
  * Link to the configuration page of the plugin & documentation
  *
  * @param string[] $actions An array of plugin action links.
@@ -191,4 +207,5 @@ function consentwow_settings_action_links( $actions ) {
 
 add_action( 'admin_init', 'consentwow_admin_init' );
 add_action( 'admin_menu', 'consentwow_admin_menu' );
+add_action( 'admin_notices', 'consentwow_admin_notices' );
 add_filter( 'plugin_action_links_' . plugin_basename( WP_CONSENTWOW_FILE ), 'consentwow_settings_action_links' );
