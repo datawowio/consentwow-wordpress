@@ -38,7 +38,7 @@ function consentwow_admin_register_api_token() {
 	$option_name  = 'consentwow_api_token';
 	$args         = array(
 		'type' => 'string',
-		'sanitize_callback' => 'sanitize_text_field',
+		'sanitize_callback' => 'consentwow_sanitize_api_token',
 		'default' => null,
 	);
 	register_setting( $option_group, $option_name, $args );
@@ -59,6 +59,17 @@ function consentwow_admin_register_api_token() {
 		'class' => 'consentwow-api-token-input',
 	);
 	add_settings_field( $id, $title, $callback, $page, $section, $args );
+}
+
+/**
+ * Sanitize and validate API Token input before saving.
+ *
+ * @param String $api_token a string from input consentwow_api_token.
+ *
+ * @return String sanitized value
+ */
+function consentwow_sanitize_api_token( $api_token ) {
+	return sanitize_text_field( $api_token );
 }
 
 /**
