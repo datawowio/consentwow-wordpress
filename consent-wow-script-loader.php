@@ -65,10 +65,8 @@ function consentwow_admin_register_api_token() {
  * Display an input for API Token
  */
 function consentwow_api_token_settings_fields() {
-	$api_token = get_option( 'consentwow_api_token' );
-?>
-<input type="text" id="consentwow_api_token" name="consentwow_api_token" class="regular-text" value="<?php echo $api_token ?>" />
-<?php
+	$api_token = esc_attr( get_option( 'consentwow_api_token' ) );
+	echo '<input type="text" id="consentwow_api_token" name="consentwow_api_token" class="regular-text" value="' . $api_token . '" />';
 }
 
 /**
