@@ -354,10 +354,34 @@ function consentwow_sanitize_nullable_input( $value ) {
 	}
 }
 
+/**
+ * Handler function for deleting a form.
+ */
+function consentwow_form_delete_action() {
+	$id = $_REQUEST['id'];
+
+	if ( isset( $id ) && ! empty( $id ) ) {
+		$form_list = new Consent_Wow_Form_List();
+		$form_list->delete( $id );
+	} else {
+		consentwow_form_add_settings_notice(
+			'Invalid ID',
+			admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_LIST_SLUG ),
+		);
+	}
+
+	consentwow_form_add_settings_notice(
+		'Delete a form successfully',
+		admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_LIST_SLUG ),
+		$type = 'success',
+	);
+}
+
 add_action( 'admin_init', 'consentwow_admin_init' );
 add_action( 'admin_menu', 'consentwow_admin_menu' );
 add_action( 'admin_notices', 'consentwow_admin_notices' );
 add_action( 'admin_action_consentwow_form_post', 'consentwow_form_post_action' );
+add_action( 'admin_action_consentwow_form_delete', 'consentwow_form_delete_action' );
 add_filter( 'plugin_action_links_' . plugin_basename( WP_CONSENTWOW_FILE ), 'consentwow_settings_action_links' );
 add_filter( 'set_screen_option_consentwow_forms_per_page', 'consentwow_form_list_set_screen_option', 10, 3 );
 register_uninstall_hook( __FILE__, 'consentwow_uninstall' );
