@@ -35,11 +35,11 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
   public function get_columns() {
     $columns = array(
       'id'           => __( 'ID', 'consentwow' ),
-      'name'         => __( 'Name', 'consentwow' ),
+      'form_name'    => __( 'Name', 'consentwow' ),
       'form_id'      => __( 'Form ID', 'consentwow' ),
       'status'       => __( 'Status', 'consentwow' ),
       'updated_date' => __( 'Updated Date', 'consentwow' ),
-      'action'       => __( 'Action', 'consentwow' )
+      'action'       => __( 'Action', 'consentwow' ),
     );
 
     return $columns;
@@ -51,23 +51,7 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
    * @return Array
    */
   private function table_data() {
-    $data = array();
-
-    $data[] = array(
-      'id'           => 1,
-      'name'         => 'Contact Form in Footer',
-      'form_id'      => 'contact-form-1',
-      'status'       => 'Online',
-      'updated_date' => '2022/09/28'
-    );
-
-    $data[] = array(
-      'id'           => 2,
-      'name'         => 'Quotation Form',
-      'form_id'      => 'quote-form',
-      'status'       => 'Unchecked',
-      'updated_date' => '2022/09/27'
-    );
+    $data = get_option( 'consentwow_forms' );
 
     return $data;
   }
@@ -95,16 +79,19 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
   public function column_default( $item, $column_name ) {
     switch( $column_name ) {
       case 'id':
-      case 'name':
+      case 'form_name':
       case 'form_id':
-      case 'status':
-      case 'updated_date':
         return $item[ $column_name ];
+      case 'updated_date':
+        $date = new DateTime(null, new DateTimeZone('Asia/Bangkok') );
+        $date = date_timestamp_set($date, $item[ $column_name ]);
+        return $date->format('d/m/Y H:i:s O');
+      case 'status':
+        return 'Online';
       case 'action':
         return $this->row_actions( $this->row_action( $item[ 'id' ] ), true );
-
       default:
-        return print_r( $item, true ) ;
+        return print_r( $item, true );
     }
   }
 
@@ -116,10 +103,10 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
   public function get_sortable_columns() {
     $sortable = array(
       'id'           => array( 'id', true ),
-      'name'         => array( 'name', true ),
+      'form_name'    => array( 'form_name', true ),
       'form_id'      => array( 'form_id', true ),
       'status'       => array( 'status', true ),
-      'updated_date' => array( 'updated_date', true )
+      'updated_date' => array( 'updated_date', true ),
     );
 
     return $sortable;
