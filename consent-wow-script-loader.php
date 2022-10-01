@@ -164,7 +164,7 @@ function consentwow_add_form_new_page() {
  * Display Add new Form page.
  */
 function consentwow_admin_form_new_page() {
-	require_once plugin_dir_path( __FILE__ ) . 'pages/form-new-page.php';
+	require_once plugin_dir_path( __FILE__ ) . 'pages/form-page.php';
 }
 
 /**
@@ -185,7 +185,7 @@ function consentwow_add_form_edit_page() {
  * Display Edit a Form page.
  */
 function consentwow_admin_form_edit_page() {
-	require_once plugin_dir_path( __FILE__ ) . 'pages/form-edit-page.php';
+	require_once plugin_dir_path( __FILE__ ) . 'pages/form-page.php';
 }
 
 /**
@@ -226,8 +226,116 @@ function consentwow_uninstall() {
 	delete_option( 'consentwow_forms_next_id' );
 }
 
+/**
+ * Set notice message from the form add/edit page.
+ *
+ * @param string $message      A message to be displayed on the alert bar.
+ * @param string $redirect_url An url to redirect after setting the notice.
+ * @param string $type         Type of the notice e.g. error, success.
+ */
+function consentwow_form_add_settings_notice( $message, $redirect_url, $type = 'error' ) {
+	set_transient(
+		'consentwow_form_notice',
+		array( 'message' => __( $message, 'consentwow' ), 'type' => $type ),
+	);
+
+	if ( wp_safe_redirect( $redirect_url ) ) {
+		exit;
+	}
+}
+
+require_once plugin_dir_path( WP_CONSENTWOW_FILE ) . 'includes/class-consent-wow-form-list.php';
+
+/**
+ * Handler function for creating/updating a form.
+ */
+function consentwow_form_post_action() {
+	$form_list = new Consent_Wow_Form_List();
+
+	$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_NEW_SLUG );
+
+	$fields = $_POST['consentwow_form'];
+	if ( ! isset( $fields ) || empty( $fields ) ) {
+		consentwow_form_add_settings_notice(
+			'Invalid Form Data.',
+			$redirect_url,
+		);
+	}
+
+	if ( isset( $fields['id'] ) ) {
+		$id = sanitize_text_field( $fields['id'] );
+		$form = $form_list->find( $id );
+		$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_NEW_SLUG . '&id=' . $id );
+		$action = 'edit';
+
+		if ( ! isset( $form ) ) {
+			consentwow_form_add_settings_notice(
+				'Invalid ID.',
+				$redirect_url,
+			);
+		}
+	} else {
+		$form = array();
+		$action = 'add';
+	}
+
+	$form['form_name'] = consentwow_sanitize_required_input( $fields['form_name'], 'Form Name is required.', $redirect_url );
+	$form['form_id'] = consentwow_sanitize_required_input( $fields['form_id'], 'Form ID is required.', $redirect_url );
+	$form['email'] = consentwow_sanitize_required_input( $fields['email'], 'Email is required.', $redirect_url );
+	$form['first_name'] = consentwow_sanitize_nullable_input( $fields['first_name'] );
+	$form['last_name'] = consentwow_sanitize_nullable_input( $fields['last_name'] );
+	$form['phone_number'] = consentwow_sanitize_nullable_input( $fields['phone_number'] );
+	$form['updated_date'] = time();
+
+	if ( $action === 'add' ) {
+		$form_list->add( $form );
+	} else {
+		$form_list->update( $id, $form );
+	}
+
+	$upcase_action = ucwords( $action );
+	consentwow_form_add_settings_notice(
+		"{$upcase_action} a form successfully",
+		admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_LIST_SLUG ),
+		$type = 'success',
+	);
+}
+
+/**
+ * Sanitize required input value. Set error notice and redirect if the value is
+ * empty.
+ *
+ * @param mixed  $value         Input value.
+ * @param string $error_message An error message to be set in alert bar if an error occurs.
+ * @param string $redirect_url  A URL to redirect if an error occurs.
+ */
+function consentwow_sanitize_required_input( $value, $error_message, $redirect_url ) {
+	if ( isset( $value ) && ! empty( $value ) ) {
+		return sanitize_text_field( $value );
+	} else {
+		consentwow_form_add_settings_notice(
+			$error_message,
+			$redirect_url,
+		);
+	}
+}
+
+/**
+ * Sanitize nullable input value. Set null value if the value is empty.
+ *
+ * @param mixed $value Input value.
+ */
+function consentwow_sanitize_nullable_input( $value ) {
+	if ( isset( $value ) && ! empty( $value ) ) {
+		return sanitize_text_field( $value );
+	} else {
+		return null;
+	}
+}
+
 add_action( 'admin_init', 'consentwow_admin_init' );
 add_action( 'admin_menu', 'consentwow_admin_menu' );
 add_action( 'admin_notices', 'consentwow_admin_notices' );
+add_action( 'admin_action_consentwow_form_post', 'consentwow_form_post_action' );
 add_filter( 'plugin_action_links_' . plugin_basename( WP_CONSENTWOW_FILE ), 'consentwow_settings_action_links' );
 register_uninstall_hook( __FILE__, 'consentwow_uninstall' );
