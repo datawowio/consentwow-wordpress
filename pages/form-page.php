@@ -5,6 +5,7 @@
  * @package consent-wow-script-loader
  */
 require_once plugin_dir_path( WP_CONSENTWOW_FILE ) . 'includes/class-consent-wow-form-list.php';
+require_once plugin_dir_path( WP_CONSENTWOW_FILE ) . 'pages/form-notice.php';
 
 $form_list = new Consent_Wow_Form_List();
 
@@ -24,6 +25,7 @@ if ( ! isset( $form ) ) {
 <div class="wrap">
 	<h1 class="wp-heading-inline"><?php echo $title ?></h1>
 	<form action="<?php echo admin_url( 'admin.php?action=consentwow_form_post' ); ?>" method="post">
+		<?php consentwow_form_display_notice(); ?>
 		<?php if ( $action == 'edit' ) : ?>
 		<input type="hidden" name="action" value="consentwow_form_post" />
 		<input name="consentwow_form[id]" type="hidden" value="<?php echo $id; ?>" />
