@@ -28,6 +28,8 @@ define( 'WP_CONSENTWOW_FILE', __FILE__ );
  */
 function consentwow_admin_init() {
 	consentwow_admin_register_api_token();
+	add_option( 'consentwow_forms', array() );
+	add_option( 'consentwow_forms_next_id', 1 );
 }
 
 /**
@@ -220,6 +222,8 @@ function consentwow_settings_action_links( $actions ) {
  */
 function consentwow_uninstall() {
 	delete_option( 'consentwow_api_token' );
+	delete_option( 'consentwow_forms' );
+	delete_option( 'consentwow_forms_next_id' );
 }
 
 add_action( 'admin_init', 'consentwow_admin_init' );
