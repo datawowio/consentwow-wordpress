@@ -19,11 +19,24 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
     $hidden   = array();
     $sortable = $this->get_sortable_columns();
 		$primary  = 'id';
+    $this->_column_headers = array( $columns, $hidden, $sortable, $primary );
+
     $data = $this->table_data();
 
     usort( $data, array( &$this, 'sort_data' ) );
 
-    $this->_column_headers = array( $columns, $hidden, $sortable, $primary );
+    $per_page = $this->get_items_per_page( 'consentwow_forms_per_page', 20 );
+    $current_page = $this->get_pagenum();
+    $total_items = count( $data );
+
+    $data = array_slice($data, (($current_page - 1) * $per_page), $per_page);
+    $this->set_pagination_args(
+      array(
+        'total_items' => $total_items,
+        'per_page'    => $per_page,
+      )
+    );
+
     $this->items  = $data;
   }
 
