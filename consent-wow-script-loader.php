@@ -136,7 +136,21 @@ function consentwow_add_form_list_page() {
 	$menu_slug   = WP_CONSENTWOW_FORM_LIST_SLUG;
 	$callback    = 'consentwow_admin_form_list_page';
 
-	add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $callback );
+	$hook = add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $callback );
+
+	add_action( "load-{$hook}", 'consentwow_form_list_add_screen_option' );
+
+  function consentwow_form_list_add_screen_option() {
+		$option = 'per_page';
+
+		$args = array(
+			'label'   => __( 'Number of Forms Per Page', 'consentwow' ),
+			'default' => 20,
+			'option'  => 'consentwow_forms_per_page',
+		);
+
+		add_screen_option( $option, $args );
+  }
 }
 
 /**
@@ -144,6 +158,13 @@ function consentwow_add_form_list_page() {
  */
 function consentwow_admin_form_list_page() {
 	require_once plugin_dir_path( __FILE__ ) . 'pages/form-list-page.php';
+}
+
+/**
+ * Callback to set screen option
+ */
+function consentwow_form_list_set_screen_option($status, $option, $value) {
+	return $value;
 }
 
 /**
@@ -338,4 +359,5 @@ add_action( 'admin_menu', 'consentwow_admin_menu' );
 add_action( 'admin_notices', 'consentwow_admin_notices' );
 add_action( 'admin_action_consentwow_form_post', 'consentwow_form_post_action' );
 add_filter( 'plugin_action_links_' . plugin_basename( WP_CONSENTWOW_FILE ), 'consentwow_settings_action_links' );
+add_filter( 'set_screen_option_consentwow_forms_per_page', 'consentwow_form_list_set_screen_option', 10, 3 );
 register_uninstall_hook( __FILE__, 'consentwow_uninstall' );
