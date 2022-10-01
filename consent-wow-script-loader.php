@@ -138,6 +138,7 @@ function consentwow_add_form_list_page() {
 
 	$hook = add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $callback );
 
+	add_action( "load-{$hook}", 'consentwow_form_list_handle_bulk_action' );
 	add_action( "load-{$hook}", 'consentwow_form_list_add_screen_option' );
 
   function consentwow_form_list_add_screen_option() {
@@ -151,6 +152,23 @@ function consentwow_add_form_list_page() {
 
 		add_screen_option( $option, $args );
   }
+
+	function consentwow_form_list_handle_bulk_action() {
+		if ( isset( $_GET['action'] ) && $_GET['action'] == 'delete_all' ) {
+			$action_url = admin_url( 'admin.php?action=consentwow_form_bulk_action_delete_all' );
+			$consentwow_forms = $_GET['consentwow_forms'];
+			$redirect_url = add_query_arg( 'consentwow_forms', $consentwow_forms, $action_url );
+
+			if ( wp_safe_redirect( $redirect_url ) ) {
+				exit;
+			}
+		} else if ( isset( $_GET['action'] ) && $_GET['action'] == -1 ) {
+			consentwow_form_add_settings_notice(
+				'Invalid Action',
+				$_REQUEST['_wp_http_referer'],
+			);
+		}
+	}
 }
 
 /**
@@ -377,11 +395,36 @@ function consentwow_form_delete_action() {
 	);
 }
 
+/**
+ * Handler function for deleting many forms from bulk action.
+ */
+function consentwow_form_bulk_action_delete_all_action() {
+	$form_ids = $_REQUEST['consentwow_forms'];
+	$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_LIST_SLUG );
+
+	if ( isset( $form_ids ) && empty( $form_ids ) ) {
+		consentwow_form_add_settings_notice(
+			'You must select at least 1 form to be deleted.',
+			$redirect_url,
+		);
+	}
+
+	$form_list = new Consent_Wow_Form_List();
+	$form_list->delete_many( $form_ids );
+
+	consentwow_form_add_settings_notice(
+		'Delete form(s) successfully',
+		$redirect_url,
+		$type = 'success',
+	);
+}
+
 add_action( 'admin_init', 'consentwow_admin_init' );
 add_action( 'admin_menu', 'consentwow_admin_menu' );
 add_action( 'admin_notices', 'consentwow_admin_notices' );
 add_action( 'admin_action_consentwow_form_post', 'consentwow_form_post_action' );
 add_action( 'admin_action_consentwow_form_delete', 'consentwow_form_delete_action' );
+add_action( 'admin_action_consentwow_form_bulk_action_delete_all', 'consentwow_form_bulk_action_delete_all_action' );
 add_filter( 'plugin_action_links_' . plugin_basename( WP_CONSENTWOW_FILE ), 'consentwow_settings_action_links' );
 add_filter( 'set_screen_option_consentwow_forms_per_page', 'consentwow_form_list_set_screen_option', 10, 3 );
 register_uninstall_hook( __FILE__, 'consentwow_uninstall' );
