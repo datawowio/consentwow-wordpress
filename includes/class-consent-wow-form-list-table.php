@@ -76,9 +76,12 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
    */
   private function row_action( $form_id ) {
     $edit_form_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_EDIT_SLUG . '&id=' . $form_id );
-    $link = "<a href='{$edit_form_url}'>Edit</a>";
+    $edit_form_link = "<a href='{$edit_form_url}'>Edit</a>";
 
-    return array( 'edit' => $link );
+    $delete_form_url = admin_url( 'admin.php?action=consentwow_form_delete&id=' . $form_id );
+    $delete_form_link = "<a href='{$delete_form_url}'>Delete</a>";
+
+    return array( 'edit' => $edit_form_link, 'delete' => $delete_form_link );
   }
 
   /**
