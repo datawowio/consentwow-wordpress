@@ -131,23 +131,10 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
    * @return Mixed
    */
   private function sort_data( $a, $b ) {
-    $orderby = 'id';
-    $order = 'asc';
-
-    if( ! empty( $_GET['orderby'] ) ) {
-        $orderby = $_GET['orderby'];
-    }
-
-    if( ! empty( $_GET['order'] ) ) {
-        $order = $_GET['order'];
-    }
-
+    $orderby = ( ! empty( $_GET['orderby'] ) ) ? $_GET['orderby'] : 'id';
+    $order = ( ! empty( $_GET['order'] ) ) ? $_GET['order'] : 'asc';
     $result = strcmp( $a[$orderby], $b[$orderby] );
 
-    if ( $order === 'asc' ) {
-        return $result;
-    } else {
-      return -$result;
-    }
+    return ( $order === 'asc' ) ? $result : - $result;
   }
 }
