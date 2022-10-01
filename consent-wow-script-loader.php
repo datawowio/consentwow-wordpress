@@ -34,7 +34,7 @@ function consentwow_admin_init() {
  * Register settings section for API Token.
  */
 function consentwow_admin_register_api_token() {
-	$option_group = 'consentwow_options_group';
+	$option_group = 'consentwow_api_token_group';
 	$option_name  = 'consentwow_api_token';
 	$args         = array(
 		'type' => 'string',
@@ -164,7 +164,6 @@ function consentwow_add_form_new_page() {
 function consentwow_admin_form_new_page() {
 	require_once plugin_dir_path( __FILE__ ) . 'pages/form-new-page.php';
 }
-
 
 /**
  * Add submenu for Edit Form page.
