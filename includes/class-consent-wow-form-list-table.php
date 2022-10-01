@@ -47,6 +47,7 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
    */
   public function get_columns() {
     $columns = array(
+      'cb'           => '<input type="checkbox" />',
       'id'           => __( 'ID', 'consentwow' ),
       'form_name'    => __( 'Name', 'consentwow' ),
       'form_id'      => __( 'Form ID', 'consentwow' ),
@@ -139,5 +140,28 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
     $result = strcmp( $a[$orderby], $b[$orderby] );
 
     return ( $order === 'asc' ) ? $result : - $result;
+  }
+
+  /**
+   * Get bulk actions to display on the table.
+   *
+   * @return object Available actions.
+   *
+   */
+  function get_bulk_actions() {
+    $actions = array(
+      'delete_all' => __( 'Delete All', 'consentwow' ),
+    );
+    return $actions;
+  }
+
+  /**
+   * Custom column for bulk action feature.
+   *
+   * @return string Checkbox input element.
+   *
+   */
+  function column_cb($item) {
+    return '<input type="checkbox" name="consentwow_forms[]" value="' . $item['id'] . '" />';
   }
 }
