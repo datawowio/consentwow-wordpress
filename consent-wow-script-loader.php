@@ -200,6 +200,7 @@ function consentwow_add_form_list_page() {
 
 	add_action( "load-{$hook}", 'consentwow_form_list_handle_bulk_action' );
 	add_action( "load-{$hook}", 'consentwow_form_list_add_screen_option' );
+	add_action( "load-{$hook}", 'consentwow_form_list_load_consent_purposes' );
 
   function consentwow_form_list_add_screen_option() {
 		$option = 'per_page';
@@ -227,6 +228,25 @@ function consentwow_add_form_list_page() {
 				'Invalid Action',
 				$_REQUEST['_wp_http_referer'],
 			);
+		}
+	}
+
+	function consentwow_form_list_load_consent_purposes() {
+		$api_token = get_option( 'consentwow_api_token' );
+
+		if ( empty( $api_token ) ) {
+			consentwow_form_add_settings_notice( 'You must provide API Token in order to use this plugin' );
+			return;
+		}
+
+		$consent_purposes = get_transient( 'consentwow_consent_purposes' );
+		if ( ! is_array( $consent_purposes ) ) {
+			$results = consentwow_fetch_consent_purposes( $api_token );
+			if ( ! is_wp_error( $results ) ) {
+				set_transient( 'consentwow_consent_purposes', $results );
+			} else {
+				consentwow_form_add_settings_notice( $results->get_error_message() );
+			}
 		}
 	}
 }
@@ -332,13 +352,13 @@ function consentwow_uninstall() {
  * @param string $redirect_url An url to redirect after setting the notice.
  * @param string $type         Type of the notice e.g. error, success.
  */
-function consentwow_form_add_settings_notice( $message, $redirect_url, $type = 'error' ) {
+function consentwow_form_add_settings_notice( $message, $redirect_url = null, $type = 'error' ) {
 	set_transient(
 		'consentwow_form_notice',
 		array( 'message' => __( $message, 'consentwow' ), 'type' => $type ),
 	);
 
-	if ( wp_safe_redirect( $redirect_url ) ) {
+	if ( ! empty( $redirect_url ) && wp_safe_redirect( $redirect_url ) ) {
 		exit;
 	}
 }
