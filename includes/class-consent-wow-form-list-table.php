@@ -137,7 +137,6 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
       'id'           => array( 'id', true ),
       'form_name'    => array( 'form_name', true ),
       'form_id'      => array( 'form_id', true ),
-      'status'       => array( 'status', true ),
       'updated_date' => array( 'updated_date', true ),
     );
 
