@@ -66,12 +66,67 @@ function consentwow_admin_register_api_token() {
 /**
  * Sanitize and validate API Token input before saving.
  *
- * @param String $api_token a string from input consentwow_api_token.
+ * @param string $api_token a string from input consentwow_api_token.
  *
- * @return String sanitized value
+ * @return string sanitized value
  */
 function consentwow_sanitize_api_token( $api_token ) {
-	return sanitize_text_field( $api_token );
+	$original_value = get_option( 'consentwow_api_token' );
+
+	$api_token = sanitize_text_field( $api_token );
+	if ( ! isset( $api_token ) || empty( $api_token ) ) {
+		add_settings_error(
+			WP_CONSENTWOW_SLUG,
+			'settings-notice',
+			__( 'API Key is Required.', 'consentwow' ),
+		);
+
+		return $original_value;
+	}
+
+	$args = array(
+		'headers' => array( 'Content-Type' => 'application/json', 'Authorization' => $api_token ),
+	);
+
+	$response = wp_remote_get( 'https://api.consentwow.com/api/v1/consent_purposes', $args );
+	$status = wp_remote_retrieve_response_code( $response );
+	if ( is_array( $response ) && ! is_wp_error( $response ) && $status >= 200 && $status < 300 ) {
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+	} else {
+		if ( $status == 401 ) {
+			$message = 'API Key is Invalid.';
+		} else {
+			$message = 'Something went wrong, please try again later or contact our support for more information.';
+		}
+
+		add_settings_error(
+			WP_CONSENTWOW_SLUG,
+			'settings-notice',
+			__( $message, 'consentwow' ),
+		);
+
+		return $original_value;
+	}
+
+	if ( isset( $body['data'] ) ) {
+		$consents = array_map(
+			function ( $consent ) {
+				return array(
+					'name'       => $consent['attributes']['name'],
+					'consent_id' => $consent['attributes']['consent_id'],
+				);
+			},
+			$body['data'],
+		);
+
+		set_transient(
+			'consentwow_consent_purposes',
+			$consents,
+			60,
+		);
+	}
+
+	return $api_token;
 }
 
 /**
