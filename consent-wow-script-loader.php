@@ -98,6 +98,14 @@ function consentwow_sanitize_api_token( $api_token ) {
 	return $api_token;
 }
 
+/**
+ * Fetch consent purposes from Consent Wow. Note that this function send a
+ * request to external service.
+ *
+ * @param string $api_token An API Token is used in Authorization header of a request.
+ *
+ * @return mixed consent purpose list from response or an object of WP_Error.
+ */
 function consentwow_fetch_consent_purposes( $api_token ) {
 	$args = array(
 		'headers' => array( 'Content-Type' => 'application/json', 'Authorization' => $api_token ),
@@ -202,6 +210,9 @@ function consentwow_add_form_list_page() {
 	add_action( "load-{$hook}", 'consentwow_form_list_add_screen_option' );
 	add_action( "load-{$hook}", 'consentwow_form_list_load_consent_purposes' );
 
+	/**
+	 * Add screen option for form list page.
+	 */
   function consentwow_form_list_add_screen_option() {
 		$option = 'per_page';
 
@@ -214,6 +225,9 @@ function consentwow_add_form_list_page() {
 		add_screen_option( $option, $args );
   }
 
+	/**
+	 * Handler function for bulk action feature.
+	 */
 	function consentwow_form_list_handle_bulk_action() {
 		if ( isset( $_GET['action'] ) && $_GET['action'] == 'delete_all' ) {
 			$action_url = admin_url( 'admin.php?action=consentwow_form_bulk_action_delete_all' );
@@ -231,6 +245,9 @@ function consentwow_add_form_list_page() {
 		}
 	}
 
+	/**
+	 * Loading and caching consent purposes.
+	 */
 	function consentwow_form_list_load_consent_purposes() {
 		$api_token = get_option( 'consentwow_api_token' );
 
