@@ -231,7 +231,7 @@ function consentwow_admin_form_edit_page() {
  * Display a notification when an error occurred in updating settings.
  */
 function consentwow_admin_notices() {
-	if ( $_GET['settings-updated'] && empty( get_settings_errors( WP_CONSENTWOW_SLUG ) ) ) {
+	if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] && empty( get_settings_errors( WP_CONSENTWOW_SLUG ) ) ) {
 		add_settings_error(
 			WP_CONSENTWOW_SLUG,
 			'settings-notice',
