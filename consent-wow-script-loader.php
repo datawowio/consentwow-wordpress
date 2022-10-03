@@ -84,6 +84,21 @@ function consentwow_sanitize_api_token( $api_token ) {
 		return $original_value;
 	}
 
+	$results = consentwow_fetch_consent_purposes( $api_token );
+	if ( is_wp_error( $results ) ) {
+		add_settings_error(
+			WP_CONSENTWOW_SLUG,
+			'settings-notice',
+			$results->get_error_message(),
+		);
+
+		return $original_value;
+	}
+
+	return $api_token;
+}
+
+function consentwow_fetch_consent_purposes( $api_token ) {
 	$args = array(
 		'headers' => array( 'Content-Type' => 'application/json', 'Authorization' => $api_token ),
 	);
@@ -99,34 +114,24 @@ function consentwow_sanitize_api_token( $api_token ) {
 			$message = 'Something went wrong, please try again later or contact our support for more information.';
 		}
 
-		add_settings_error(
-			WP_CONSENTWOW_SLUG,
-			'settings-notice',
-			__( $message, 'consentwow' ),
-		);
-
-		return $original_value;
+		return new WP_Error( $status, __( $message, 'consentwow' ) );
 	}
 
 	if ( isset( $body['data'] ) ) {
-		$consents = array_map(
-			function ( $consent ) {
+		$consent_purposes = array_map(
+			function ( $consent_purpose ) {
 				return array(
-					'name'       => $consent['attributes']['name'],
-					'consent_id' => $consent['attributes']['consent_id'],
+					'name'       => $consent_purpose['attributes']['name'],
+					'consent_id' => $consent_purpose['attributes']['consent_id'],
 				);
 			},
 			$body['data'],
 		);
 
-		set_transient(
-			'consentwow_consent_purposes',
-			$consents,
-			60,
-		);
+		set_transient( 'consentwow_consent_purposes', $consent_purposes, 60 );
 	}
 
-	return $api_token;
+	return $consent_purposes;
 }
 
 /**
