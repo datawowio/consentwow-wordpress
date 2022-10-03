@@ -28,6 +28,8 @@ define( 'WP_CONSENTWOW_FILE', __FILE__ );
  */
 function consentwow_admin_init() {
 	consentwow_admin_register_api_token();
+	add_option( 'consentwow_forms', array() );
+	add_option( 'consentwow_forms_next_id', 1 );
 }
 
 /**
@@ -134,7 +136,39 @@ function consentwow_add_form_list_page() {
 	$menu_slug   = WP_CONSENTWOW_FORM_LIST_SLUG;
 	$callback    = 'consentwow_admin_form_list_page';
 
-	add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $callback );
+	$hook = add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $callback );
+
+	add_action( "load-{$hook}", 'consentwow_form_list_handle_bulk_action' );
+	add_action( "load-{$hook}", 'consentwow_form_list_add_screen_option' );
+
+  function consentwow_form_list_add_screen_option() {
+		$option = 'per_page';
+
+		$args = array(
+			'label'   => __( 'Number of Forms Per Page', 'consentwow' ),
+			'default' => 20,
+			'option'  => 'consentwow_forms_per_page',
+		);
+
+		add_screen_option( $option, $args );
+  }
+
+	function consentwow_form_list_handle_bulk_action() {
+		if ( isset( $_GET['action'] ) && $_GET['action'] == 'delete_all' ) {
+			$action_url = admin_url( 'admin.php?action=consentwow_form_bulk_action_delete_all' );
+			$consentwow_forms = $_GET['consentwow_forms'];
+			$redirect_url = add_query_arg( 'consentwow_forms', $consentwow_forms, $action_url );
+
+			if ( wp_safe_redirect( $redirect_url ) ) {
+				exit;
+			}
+		} else if ( isset( $_GET['action'] ) && $_GET['action'] == -1 ) {
+			consentwow_form_add_settings_notice(
+				'Invalid Action',
+				$_REQUEST['_wp_http_referer'],
+			);
+		}
+	}
 }
 
 /**
@@ -142,6 +176,13 @@ function consentwow_add_form_list_page() {
  */
 function consentwow_admin_form_list_page() {
 	require_once plugin_dir_path( __FILE__ ) . 'pages/form-list-page.php';
+}
+
+/**
+ * Callback to set screen option
+ */
+function consentwow_form_list_set_screen_option($status, $option, $value) {
+	return $value;
 }
 
 /**
@@ -162,7 +203,7 @@ function consentwow_add_form_new_page() {
  * Display Add new Form page.
  */
 function consentwow_admin_form_new_page() {
-	require_once plugin_dir_path( __FILE__ ) . 'pages/form-new-page.php';
+	require_once plugin_dir_path( __FILE__ ) . 'pages/form-page.php';
 }
 
 /**
@@ -183,7 +224,7 @@ function consentwow_add_form_edit_page() {
  * Display Edit a Form page.
  */
 function consentwow_admin_form_edit_page() {
-	require_once plugin_dir_path( __FILE__ ) . 'pages/form-edit-page.php';
+	require_once plugin_dir_path( __FILE__ ) . 'pages/form-page.php';
 }
 
 /**
@@ -220,10 +261,170 @@ function consentwow_settings_action_links( $actions ) {
  */
 function consentwow_uninstall() {
 	delete_option( 'consentwow_api_token' );
+	delete_option( 'consentwow_forms' );
+	delete_option( 'consentwow_forms_next_id' );
+}
+
+/**
+ * Set notice message from the form add/edit page.
+ *
+ * @param string $message      A message to be displayed on the alert bar.
+ * @param string $redirect_url An url to redirect after setting the notice.
+ * @param string $type         Type of the notice e.g. error, success.
+ */
+function consentwow_form_add_settings_notice( $message, $redirect_url, $type = 'error' ) {
+	set_transient(
+		'consentwow_form_notice',
+		array( 'message' => __( $message, 'consentwow' ), 'type' => $type ),
+	);
+
+	if ( wp_safe_redirect( $redirect_url ) ) {
+		exit;
+	}
+}
+
+require_once plugin_dir_path( WP_CONSENTWOW_FILE ) . 'includes/class-consent-wow-form-list.php';
+
+/**
+ * Handler function for creating/updating a form.
+ */
+function consentwow_form_post_action() {
+	$form_list = new Consent_Wow_Form_List();
+
+	$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_NEW_SLUG );
+
+	$fields = $_POST['consentwow_form'];
+	if ( ! isset( $fields ) || empty( $fields ) ) {
+		consentwow_form_add_settings_notice(
+			'Invalid Form Data.',
+			$redirect_url,
+		);
+	}
+
+	if ( isset( $fields['id'] ) ) {
+		$id = sanitize_text_field( $fields['id'] );
+		$form = $form_list->find( $id );
+		$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_NEW_SLUG . '&id=' . $id );
+		$action = 'edit';
+
+		if ( ! isset( $form ) ) {
+			consentwow_form_add_settings_notice(
+				'Invalid ID.',
+				$redirect_url,
+			);
+		}
+	} else {
+		$form = array();
+		$action = 'add';
+	}
+
+	$form['form_name'] = consentwow_sanitize_required_input( $fields['form_name'], 'Form Name is required.', $redirect_url );
+	$form['form_id'] = consentwow_sanitize_required_input( $fields['form_id'], 'Form ID is required.', $redirect_url );
+	$form['email'] = consentwow_sanitize_required_input( $fields['email'], 'Email is required.', $redirect_url );
+	$form['first_name'] = consentwow_sanitize_nullable_input( $fields['first_name'] );
+	$form['last_name'] = consentwow_sanitize_nullable_input( $fields['last_name'] );
+	$form['phone_number'] = consentwow_sanitize_nullable_input( $fields['phone_number'] );
+	$form['updated_date'] = time();
+
+	if ( $action === 'add' ) {
+		$form_list->add( $form );
+	} else {
+		$form_list->update( $id, $form );
+	}
+
+	$upcase_action = ucwords( $action );
+	consentwow_form_add_settings_notice(
+		"{$upcase_action} a form successfully",
+		admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_LIST_SLUG ),
+		$type = 'success',
+	);
+}
+
+/**
+ * Sanitize required input value. Set error notice and redirect if the value is
+ * empty.
+ *
+ * @param mixed  $value         Input value.
+ * @param string $error_message An error message to be set in alert bar if an error occurs.
+ * @param string $redirect_url  A URL to redirect if an error occurs.
+ */
+function consentwow_sanitize_required_input( $value, $error_message, $redirect_url ) {
+	if ( isset( $value ) && ! empty( $value ) ) {
+		return sanitize_text_field( $value );
+	} else {
+		consentwow_form_add_settings_notice(
+			$error_message,
+			$redirect_url,
+		);
+	}
+}
+
+/**
+ * Sanitize nullable input value. Set null value if the value is empty.
+ *
+ * @param mixed $value Input value.
+ */
+function consentwow_sanitize_nullable_input( $value ) {
+	if ( isset( $value ) && ! empty( $value ) ) {
+		return sanitize_text_field( $value );
+	} else {
+		return null;
+	}
+}
+
+/**
+ * Handler function for deleting a form.
+ */
+function consentwow_form_delete_action() {
+	$id = $_REQUEST['id'];
+
+	if ( isset( $id ) && ! empty( $id ) ) {
+		$form_list = new Consent_Wow_Form_List();
+		$form_list->delete( $id );
+	} else {
+		consentwow_form_add_settings_notice(
+			'Invalid ID',
+			admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_LIST_SLUG ),
+		);
+	}
+
+	consentwow_form_add_settings_notice(
+		'Delete a form successfully',
+		admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_LIST_SLUG ),
+		$type = 'success',
+	);
+}
+
+/**
+ * Handler function for deleting many forms from bulk action.
+ */
+function consentwow_form_bulk_action_delete_all_action() {
+	$form_ids = $_REQUEST['consentwow_forms'];
+	$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_LIST_SLUG );
+
+	if ( isset( $form_ids ) && empty( $form_ids ) ) {
+		consentwow_form_add_settings_notice(
+			'You must select at least 1 form to be deleted.',
+			$redirect_url,
+		);
+	}
+
+	$form_list = new Consent_Wow_Form_List();
+	$form_list->delete_many( $form_ids );
+
+	consentwow_form_add_settings_notice(
+		'Delete form(s) successfully',
+		$redirect_url,
+		$type = 'success',
+	);
 }
 
 add_action( 'admin_init', 'consentwow_admin_init' );
 add_action( 'admin_menu', 'consentwow_admin_menu' );
 add_action( 'admin_notices', 'consentwow_admin_notices' );
+add_action( 'admin_action_consentwow_form_post', 'consentwow_form_post_action' );
+add_action( 'admin_action_consentwow_form_delete', 'consentwow_form_delete_action' );
+add_action( 'admin_action_consentwow_form_bulk_action_delete_all', 'consentwow_form_bulk_action_delete_all_action' );
 add_filter( 'plugin_action_links_' . plugin_basename( WP_CONSENTWOW_FILE ), 'consentwow_settings_action_links' );
+add_filter( 'set_screen_option_consentwow_forms_per_page', 'consentwow_form_list_set_screen_option', 10, 3 );
 register_uninstall_hook( __FILE__, 'consentwow_uninstall' );
