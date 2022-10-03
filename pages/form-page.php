@@ -43,7 +43,7 @@ if ( ! isset( $form ) ) {
 							id="consentwow_form_name"
 							name="consentwow_form[form_name]"
 							class="regular-text"
-							value="<?php echo $form['form_name']; ?>"
+							value="<?php echo isset( $form['form_name'] ) ? $form['form_name'] : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -58,7 +58,7 @@ if ( ! isset( $form ) ) {
 							id="consentwow_form_id"
 							name="consentwow_form[form_id]"
 							class="regular-text"
-							value="<?php echo $form['form_id']; ?>"
+							value="<?php echo isset( $form['form_id'] ) ? $form['form_id'] : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -73,7 +73,7 @@ if ( ! isset( $form ) ) {
 							id="consentwow_email"
 							name="consentwow_form[email]"
 							class="regular-text"
-							value="<?php echo $form['email']; ?>"
+							value="<?php echo isset( $form['email'] ) ? $form['email'] : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -87,7 +87,7 @@ if ( ! isset( $form ) ) {
 							id="consentwow_first_name"
 							name="consentwow_form[first_name]"
 							class="regular-text"
-							value="<?php echo $form['first_name']; ?>"
+							value="<?php echo isset( $form['first_name'] ) ? $form['first_name'] : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -101,7 +101,7 @@ if ( ! isset( $form ) ) {
 							id="consentwow_last_name"
 							name="consentwow_form[last_name]"
 							class="regular-text"
-							value="<?php echo $form['last_name']; ?>"
+							value="<?php echo isset( $form['last_name'] ) ? $form['last_name'] : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -115,7 +115,7 @@ if ( ! isset( $form ) ) {
 							id="consentwow_phone_number"
 							name="consentwow_form[phone_number]"
 							class="regular-text"
-							value="<?php echo $form['phone_number']; ?>"
+							value="<?php echo isset( $form['phone_number'] ) ? $form['phone_number'] : ''; ?>"
 						/>
 					</td>
 				</tr>
