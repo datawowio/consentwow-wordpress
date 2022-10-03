@@ -66,12 +66,80 @@ function consentwow_admin_register_api_token() {
 /**
  * Sanitize and validate API Token input before saving.
  *
- * @param String $api_token a string from input consentwow_api_token.
+ * @param string $api_token a string from input consentwow_api_token.
  *
- * @return String sanitized value
+ * @return string sanitized value
  */
 function consentwow_sanitize_api_token( $api_token ) {
-	return sanitize_text_field( $api_token );
+	$original_value = get_option( 'consentwow_api_token' );
+
+	$api_token = sanitize_text_field( $api_token );
+	if ( ! isset( $api_token ) || empty( $api_token ) ) {
+		add_settings_error(
+			WP_CONSENTWOW_SLUG,
+			'settings-notice',
+			__( 'API Key is Required.', 'consentwow' ),
+		);
+
+		return $original_value;
+	}
+
+	$results = consentwow_fetch_consent_purposes( $api_token );
+	if ( is_wp_error( $results ) ) {
+		add_settings_error(
+			WP_CONSENTWOW_SLUG,
+			'settings-notice',
+			$results->get_error_message(),
+		);
+
+		return $original_value;
+	}
+
+	return $api_token;
+}
+
+/**
+ * Fetch consent purposes from Consent Wow. Note that this function send a
+ * request to external service.
+ *
+ * @param string $api_token An API Token is used in Authorization header of a request.
+ *
+ * @return mixed consent purpose list from response or an object of WP_Error.
+ */
+function consentwow_fetch_consent_purposes( $api_token ) {
+	$args = array(
+		'headers' => array( 'Content-Type' => 'application/json', 'Authorization' => $api_token ),
+	);
+
+	$response = wp_remote_get( 'https://api.consentwow.com/api/v1/consent_purposes', $args );
+	$status = wp_remote_retrieve_response_code( $response );
+	if ( is_array( $response ) && ! is_wp_error( $response ) && $status >= 200 && $status < 300 ) {
+		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+	} else {
+		if ( $status == 401 ) {
+			$message = 'API Key is Invalid.';
+		} else {
+			$message = 'Something went wrong, please try again later or contact our support for more information.';
+		}
+
+		return new WP_Error( $status, __( $message, 'consentwow' ) );
+	}
+
+	if ( isset( $body['data'] ) ) {
+		$consent_purposes = array_map(
+			function ( $consent_purpose ) {
+				return array(
+					'name'       => $consent_purpose['attributes']['name'],
+					'consent_id' => $consent_purpose['attributes']['consent_id'],
+				);
+			},
+			$body['data'],
+		);
+
+		set_transient( 'consentwow_consent_purposes', $consent_purposes, 60 );
+	}
+
+	return $consent_purposes;
 }
 
 /**
@@ -79,7 +147,7 @@ function consentwow_sanitize_api_token( $api_token ) {
  */
 function consentwow_api_token_settings_fields() {
 	$api_token = esc_attr( get_option( 'consentwow_api_token' ) );
-	echo '<input type="text" id="consentwow_api_token" name="consentwow_api_token" class="regular-text" value="' . $api_token . '" />';
+	echo '<input required type="text" id="consentwow_api_token" name="consentwow_api_token" class="regular-text" value="' . $api_token . '" />';
 }
 
 /**
@@ -140,7 +208,11 @@ function consentwow_add_form_list_page() {
 
 	add_action( "load-{$hook}", 'consentwow_form_list_handle_bulk_action' );
 	add_action( "load-{$hook}", 'consentwow_form_list_add_screen_option' );
+	add_action( "load-{$hook}", 'consentwow_form_list_load_consent_purposes' );
 
+	/**
+	 * Add screen option for form list page.
+	 */
   function consentwow_form_list_add_screen_option() {
 		$option = 'per_page';
 
@@ -153,6 +225,9 @@ function consentwow_add_form_list_page() {
 		add_screen_option( $option, $args );
   }
 
+	/**
+	 * Handler function for bulk action feature.
+	 */
 	function consentwow_form_list_handle_bulk_action() {
 		if ( isset( $_GET['action'] ) && $_GET['action'] == 'delete_all' ) {
 			$action_url = admin_url( 'admin.php?action=consentwow_form_bulk_action_delete_all' );
@@ -167,6 +242,28 @@ function consentwow_add_form_list_page() {
 				'Invalid Action',
 				$_REQUEST['_wp_http_referer'],
 			);
+		}
+	}
+
+	/**
+	 * Loading and caching consent purposes.
+	 */
+	function consentwow_form_list_load_consent_purposes() {
+		$api_token = get_option( 'consentwow_api_token' );
+
+		if ( empty( $api_token ) ) {
+			consentwow_form_add_settings_notice( 'You must provide API Token in order to use this plugin' );
+			return;
+		}
+
+		$consent_purposes = get_transient( 'consentwow_consent_purposes' );
+		if ( ! is_array( $consent_purposes ) ) {
+			$results = consentwow_fetch_consent_purposes( $api_token );
+			if ( ! is_wp_error( $results ) ) {
+				set_transient( 'consentwow_consent_purposes', $results );
+			} else {
+				consentwow_form_add_settings_notice( $results->get_error_message() );
+			}
 		}
 	}
 }
@@ -272,13 +369,13 @@ function consentwow_uninstall() {
  * @param string $redirect_url An url to redirect after setting the notice.
  * @param string $type         Type of the notice e.g. error, success.
  */
-function consentwow_form_add_settings_notice( $message, $redirect_url, $type = 'error' ) {
+function consentwow_form_add_settings_notice( $message, $redirect_url = null, $type = 'error' ) {
 	set_transient(
 		'consentwow_form_notice',
 		array( 'message' => __( $message, 'consentwow' ), 'type' => $type ),
 	);
 
-	if ( wp_safe_redirect( $redirect_url ) ) {
+	if ( ! empty( $redirect_url ) && wp_safe_redirect( $redirect_url ) ) {
 		exit;
 	}
 }

@@ -104,7 +104,22 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
         $date = date_timestamp_set($date, $item[ $column_name ]);
         return $date->format('d/m/Y H:i:s O');
       case 'status':
-        return 'Online';
+        $consent_purposes = get_transient( 'consentwow_consent_purposes' );
+        if ( ! is_array( $consent_purposes ) ) {
+          return 'Unchecked';
+        }
+
+        $is_array_condition = isset( $item['consents'] ) && is_array( $item['consents'] );
+        $is_subset_condition = ! array_diff(
+          array_column( $item['consents'], 'consent_id' ),
+          array_column( $consent_purposes, 'consent_id' ),
+        );
+
+        if ( $is_array_condition && $is_subset_condition ) {
+          return 'Passed';
+        } else {
+          return 'Error';
+        }
       case 'action':
         return $this->row_actions( $this->row_action( $item[ 'id' ] ), true );
       default:
@@ -122,7 +137,6 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
       'id'           => array( 'id', true ),
       'form_name'    => array( 'form_name', true ),
       'form_id'      => array( 'form_id', true ),
-      'status'       => array( 'status', true ),
       'updated_date' => array( 'updated_date', true ),
     );
 
