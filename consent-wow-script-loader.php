@@ -59,7 +59,7 @@ function consentwow_admin_api_token_settings_page() {
  * Admin menu icon.
  */
 function consentwow_admin_menu_icon() {
-	$file_contents = file_get_contents( plugin_dir_path( __FILE__ ) . 'static/images/icon-cookiewow.b64' );
+	$file_contents = file_get_contents( plugin_dir_path( __FILE__ ) . 'static/images/icon-consentwow.b64' );
 	return "data:image/svg+xml;base64,$file_contents";
 }
 
