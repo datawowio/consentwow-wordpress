@@ -139,7 +139,7 @@ function consentwow_fetch_consent_purposes( $api_token ) {
  */
 function consentwow_api_token_settings_fields() {
 	$api_token = esc_attr( get_option( 'consentwow_api_token' ) );
-	echo '<input type="text" id="consentwow_api_token" name="consentwow_api_token" class="regular-text" value="' . $api_token . '" />';
+	echo '<input required type="text" id="consentwow_api_token" name="consentwow_api_token" class="regular-text" value="' . $api_token . '" />';
 }
 
 /**
