@@ -123,7 +123,7 @@ if ( ! isset( $form ) ) {
 
         const tag = document.createElement('tr');
         tag.classList.add('consentwow-consent-input');
-        tag.id = `consentwow-consent-field-${i}`
+        tag.id = `consentwow-consent-field-${i}`;
 
         // add purpose key field
         const purposeKeyCol = document.createElement('td');
