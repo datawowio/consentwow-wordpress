@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Consent Wow Script Loader
  *
@@ -14,7 +13,7 @@ if ( isset( $_GET['id'] ) && ! empty( $_GET['id'] ) ) {
 	$action = 'edit';
 	$id = $_GET['id'];
 	$title = "Edit a Form#{$id}";
-	$form = $form_list->find($id);
+	$form = $form_list->find( $id );
 }
 
 if ( ! isset( $form ) ) {
@@ -22,7 +21,6 @@ if ( ! isset( $form ) ) {
 	$title = 'Create a new Form';
 	$form = array();
 }
-
 ?>
 <div class="wrap">
     <h1 class="wp-heading-inline"><?php echo $title ?></h1>
