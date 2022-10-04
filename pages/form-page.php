@@ -30,7 +30,7 @@ if ( ! isset( $form ) ) {
 		<?php consentwow_form_display_notice(); ?>
 		<?php if ( $action == 'edit' ) : ?>
 		<input type="hidden" name="action" value="consentwow_form_post" />
-	    <input name="consentwow_form[id]" type="hidden" value="<?php echo $id; ?>" />
+		<input name="consentwow_form[id]" type="hidden" value="<?php echo $id; ?>" />
 		<?php endif; ?>
 		<table class="form-table" role="presentation">
 			<tbody>
@@ -138,7 +138,7 @@ if ( ! isset( $form ) ) {
 			</tbody>
 		</table>
 		<div class="submit">
-			<button class="button button-primary" style="width:fit-content;" onClick="addConsent()"> + เพิ่มการเชื่อมต่อกับข้อมูลความยินยอม </button>
+			<button class="button button-primary" style="width:fit-content;" onclick="addConsent()"> + เพิ่มการเชื่อมต่อกับข้อมูลความยินยอม </button>
 		</div>
 		<div class="submit">
 			<input type="submit" name="submit" id="submit" class="button button-primary" value="เพิ่มฟอร์ม">
