@@ -5,19 +5,19 @@
  *
  * @package consent-wow-script-loader
  */
-require_once plugin_dir_path(WP_CONSENTWOW_FILE) . 'includes/class-consent-wow-form-list.php';
-require_once plugin_dir_path(WP_CONSENTWOW_FILE) . 'pages/form-notice.php';
+require_once plugin_dir_path( WP_CONSENTWOW_FILE ) . 'includes/class-consent-wow-form-list.php';
+require_once plugin_dir_path( WP_CONSENTWOW_FILE ) . 'pages/form-notice.php';
 
 $form_list = new Consent_Wow_Form_List();
 
-if (isset($_GET['id']) && !empty($_GET['id'])) {
+if ( isset( $_GET['id'] ) && ! empty( $_GET['id'] ) ) {
 	$action = 'edit';
 	$id = $_GET['id'];
 	$title = "Edit a Form#{$id}";
 	$form = $form_list->find($id);
 }
 
-if (!isset($form)) {
+if ( ! isset( $form ) ) {
 	$action = 'add';
 	$title = 'Create a new Form';
 	$form = array();
@@ -117,28 +117,50 @@ if (!isset($form)) {
 
     <script>
     let i = 0;
+
     const addConsent = () => {
         const contentTable = document.getElementsByTagName('tbody');
+
         const tag = document.createElement('tr');
         tag.classList.add('consentwow-consent-input');
+        tag.id = `consentwow-consent-field-${i}`
+
+        // add purpose key field
         const purposeKeyCol = document.createElement('td');
         const purposeKeyInput = document.createElement("input");
         purposeKeyInput.type = "text";
         purposeKeyInput.name = `consentwow_form[conset_key_${i}]`;
-        purposeKeyInput.classList.add('regular-text')
-        purposeKeyInput.placeholder = "ID ของวัตถุประสงค์"
-        purposeKeyInput.style = "width:200px;"
-        purposeKeyCol.appendChild(purposeKeyInput)
-        tag.appendChild(purposeKeyCol)
+        purposeKeyInput.classList.add('regular-text');
+        purposeKeyInput.placeholder = "ID ของวัตถุประสงค์";
+        purposeKeyInput.style = "width:185px;";
+        purposeKeyCol.appendChild(purposeKeyInput);
+        tag.appendChild(purposeKeyCol);
+
+        // add purpose key field
         const purposeNameCol = document.createElement('td');
         const purposeNameInput = document.createElement("input");
         purposeNameInput.type = "text";
         purposeNameInput.name = `consentwow_form[conset_name_${i}]`;
-        purposeNameInput.classList.add('regular-text')
-        purposeNameInput.placeholder = "ชื่อวัตุประสงค์ความยินยอม"
-        purposeNameCol.appendChild(purposeNameInput)
-        tag.appendChild(purposeNameCol)
-        contentTable[0].appendChild(tag)
+        purposeNameInput.classList.add('regular-text');
+        purposeNameInput.placeholder = "ชื่อวัตุประสงค์ความยินยอม";
+        purposeNameCol.appendChild(purposeNameInput);
+
+        // add remove button
+        const removeButton = document.createElement("button");
+        removeButton.classList.add('button');
+        removeButton.style = "background-color:red; border: white; color: white; margin-left: 5px";
+        removeButton.textContent = 'X';
+        removeButton.id = i;
+        removeButton.onclick = e => {
+            const id = e.target.id;
+            document.getElementById(`consentwow-consent-field-${id}`).remove();
+        }
+
+        purposeNameCol.appendChild(removeButton);
+        tag.appendChild(purposeNameCol);
+
+        // add child to parent
+        contentTable[0].appendChild(tag);
         i += 1;
     }
     </script>
