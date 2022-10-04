@@ -39,7 +39,15 @@ if ( ! isset( $form ) ) {
 						<label for="consentwow_form_name">ชื่อฟอร์ม</label>
 					</th>
 					<td>
-						<input required type="text" id="consentwow_form_name" name="consentwow_form[form_name]" placeholder="Contact form" class="regular-text" value="<?php echo isset( $form['form_name'] ) ? $form['form_name'] : ''; ?>" />
+						<input 
+							required 
+							type="text" 
+							id="consentwow_form_name" 
+							name="consentwow_form[form_name]" 
+							placeholder="Contact form" 
+							class="regular-text" 
+							value="<?php echo isset( $form['form_name'] ) ? $form['form_name'] : ''; ?>" 
+						/>
 					</td>
 				</tr>
 				<tr class="consentwow-form-id-input">
@@ -47,7 +55,15 @@ if ( ! isset( $form ) ) {
 						<label for="consentwow_form_id">ฟอร์ม ID</label>
 					</th>
 					<td>
-						<input required type="text" id="consentwow_form_id" name="consentwow_form[form_id]" placeholder="1" class="regular-text" value="<?php echo isset( $form['form_id'] ) ? $form['form_id'] : ''; ?>" />
+						<input 
+							required 
+							type="text" 
+							id="consentwow_form_id" 
+							name="consentwow_form[form_id]" 
+							placeholder="1" 
+							class="regular-text" 
+							value="<?php echo isset( $form['form_id'] ) ? $form['form_id'] : ''; ?>" 
+						/>
 					</td>
 				</tr>
 				<tr class="consentwow-consent-input">
@@ -58,7 +74,15 @@ if ( ! isset( $form ) ) {
 						<label for="consentwow_email">Email (UID)</label>
 					</th>
 					<td>
-						<input required type="text" id="consentwow_email" name="consentwow_form[email]" placeholder="อีเมลแอดเดรส" class="regular-text" value="<?php echo isset( $form['email'] ) ? $form['email'] : ''; ?>" />
+						<input 
+							required 
+							type="text" 
+							id="consentwow_email" 
+							name="consentwow_form[email]" 
+							placeholder="อีเมลแอดเดรส" 
+							class="regular-text" 
+							value="<?php echo isset( $form['email'] ) ? $form['email'] : ''; ?>" 
+						/>
 					</td>
 				</tr>
 				<tr class="consentwow-first-name-input">
@@ -66,7 +90,14 @@ if ( ! isset( $form ) ) {
 						<label for="consentwow_first_name">ชื่อจริง</label>
 					</th>
 					<td>
-						<input type="text" id="consentwow_first_name" name="consentwow_form[first_name]" placeholder="ชื่อจริง" class="regular-text" value="<?php echo isset( $form['first_name'] ) ? $form['first_name'] : ''; ?>" />
+						<input 
+							type="text" 
+							id="consentwow_first_name" 
+							name="consentwow_form[first_name]" 
+							placeholder="ชื่อจริง" 
+							class="regular-text" 
+							value="<?php echo isset( $form['first_name'] ) ? $form['first_name'] : ''; ?>" 
+						/>
 					</td>
 				</tr>
 				<tr class="consentwow-last-name-input">
@@ -74,7 +105,14 @@ if ( ! isset( $form ) ) {
 						<label for="consentwow_last_name">นามสกุล</label>
 					</th>
 					<td>
-						<input type="text" id="consentwow_last_name" name="consentwow_form[last_name]" placeholder="นามสกุล" class="regular-text" value="<?php echo isset( $form['last_name'] ) ? $form['last_name'] : ''; ?>" />
+						<input 
+							type="text" 
+							id="consentwow_last_name" 
+							name="consentwow_form[last_name]" 
+							placeholder="นามสกุล" 
+							class="regular-text" 
+							value="<?php echo isset( $form['last_name'] ) ? $form['last_name'] : ''; ?>" 
+						/>
 					</td>
 				</tr>
 				<tr class="consentwow-phone-number-input">
@@ -82,7 +120,14 @@ if ( ! isset( $form ) ) {
 						<label for="consentwow_phone_number">เบอร์โทรศัพท์</label>
 					</th>
 					<td>
-						<input type="text" id="consentwow_phone_number" name="consentwow_form[phone_number]" placeholder="เบอร์โทรศัพท์" class="regular-text" value="<?php echo isset( $form['phone_number'] ) ? $form['phone_number'] : ''; ?>" />
+						<input 
+							type="text" 
+							id="consentwow_phone_number" 
+							name="consentwow_form[phone_number]" 
+							placeholder="เบอร์โทรศัพท์" 
+							class="regular-text" 
+							value="<?php echo isset( $form['phone_number'] ) ? $form['phone_number'] : ''; ?>" 
+						/>
 					</td>
 				</tr>
 				<tr class="consentwow-consent-head">
