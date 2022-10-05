@@ -24,8 +24,8 @@ if ( ! isset( $form ) ) {
 ?>
 <div class="wrap">
 	<h1 class="wp-heading-inline"><?php echo $title ?></h1>
-	<h4>ปลั๊กอินนี้สนับสนุนเฉพาะแบบฟอร์มประเภท Contact Form (CF7)
-        คุณสามารถอ่านวิธีการติดตั้งและรายละเอียดการเพิ่มแบบฟอร์มได้ ที่นี่ </h4>
+	<h4>ปลั๊กอินนี้สนับสนุนเฉพาะแบบฟอร์มประเภท Contact Form (CF7) 
+		คุณสามารถอ่านวิธีการติดตั้งและรายละเอียดการเพิ่มแบบฟอร์มได้ ที่นี่ </h4>
 	<form action="<?php echo admin_url( 'admin.php?action=consentwow_form_post' ); ?>" method="post">
 		<?php consentwow_form_display_notice(); ?>
 		<?php if ( $action == 'edit' ) : ?>
