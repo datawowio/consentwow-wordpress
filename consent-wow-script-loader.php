@@ -579,7 +579,7 @@ function consentwow_enqueue_scripts() {
 	}
 
 	$script_name  = 'consentwow_script';
-	$src          = 'https://cdn.consentwow.com/script.js';
+	$src          = 'https://cdn.consentwow.com/script.min.js';
 	$dependencies = array( 'jquery' );
 	$version      = null;
 	$in_footer    = false;
