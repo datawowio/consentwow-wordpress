@@ -401,7 +401,7 @@ function consentwow_form_post_action() {
 	if ( isset( $fields['id'] ) ) {
 		$id = sanitize_text_field( $fields['id'] );
 		$form = $form_list->find( $id );
-		$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_NEW_SLUG . '&id=' . $id );
+		$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_EDIT_SLUG . '&id=' . $id );
 		$action = 'edit';
 
 		if ( ! isset( $form ) ) {
