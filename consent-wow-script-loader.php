@@ -601,6 +601,27 @@ function consentwow_script_loader_tag( $tag, $script_name, $src ) {
 	return $tag;
 }
 
+/**
+ * Load javascript into adding/editing form page.
+ */
+function consentwow_admin_form_page_scripts( $hook ) {
+	$pages = array(
+		'consent-wow_page_consentwow-form-new',
+		'admin_page_consentwow-form-edit',
+	);
+
+	if ( ! in_array( $hook, $pages ) ) {
+		return;
+	}
+
+	$script_name = 'consentwow_admin_form_page_script';
+	$src         = plugin_dir_url( __FILE__ ) . 'js/add-consent.js';
+	$deps        = array();
+	$version     = null;
+	$in_footer   = false;
+	wp_enqueue_script( $script_name, $src, $deps, $version, $in_footer );
+}
+
 add_action( 'admin_init', 'consentwow_admin_init' );
 add_action( 'admin_menu', 'consentwow_admin_menu' );
 add_action( 'admin_notices', 'consentwow_admin_notices' );
@@ -608,6 +629,7 @@ add_action( 'admin_action_consentwow_form_post', 'consentwow_form_post_action' )
 add_action( 'admin_action_consentwow_form_delete', 'consentwow_form_delete_action' );
 add_action( 'admin_action_consentwow_form_bulk_action_delete_all', 'consentwow_form_bulk_action_delete_all_action' );
 add_action( 'wp_enqueue_scripts', 'consentwow_enqueue_scripts' );
+add_action( 'admin_enqueue_scripts', 'consentwow_admin_form_page_scripts' );
 add_filter( 'plugin_action_links_' . plugin_basename( WP_CONSENTWOW_FILE ), 'consentwow_settings_action_links' );
 add_filter( 'set_screen_option_consentwow_forms_per_page', 'consentwow_form_list_set_screen_option', 10, 3 );
 add_filter( 'script_loader_tag', 'consentwow_script_loader_tag', $priority = 1, $accepted_args = 3 );
