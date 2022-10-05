@@ -162,7 +162,7 @@ if ( ! isset( $form ) ) {
 			</button>
 		</div>
 		<div class="submit">
-			<input type="submit" name="submit" id="submit" class="button button-primary" value="เพิ่มฟอร์ม">
+			<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo ( $action == 'add' ) ? 'เพิ่มฟอร์ม' : 'บันทึกฟอร์ม'; ?>">
 		</div>
 	</form>
 </div>
