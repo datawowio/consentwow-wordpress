@@ -10,8 +10,9 @@ function addConsent() {
   // add purpose key field
   const purposeKeyCol = document.createElement('td');
   const purposeKeyInput = document.createElement("input");
+  purposeKeyInput.required = true;
   purposeKeyInput.type = "text";
-  purposeKeyInput.name = `consentwow_form[][consent_id]`;
+  purposeKeyInput.name = `consentwow_form[consents][${i}][consent_id]`;
   purposeKeyInput.classList.add('regular-text');
   purposeKeyInput.placeholder = "ID ของวัตถุประสงค์";
   purposeKeyInput.style = "width:185px;";
@@ -21,8 +22,9 @@ function addConsent() {
   // add purpose key field
   const purposeNameCol = document.createElement('td');
   const purposeNameInput = document.createElement("input");
+  purposeNameInput.required = true;
   purposeNameInput.type = "text";
-  purposeNameInput.name = `consentwow_form[][input_id]`;
+  purposeNameInput.name = `consentwow_form[consents][${i}][input_id]`;
   purposeNameInput.classList.add('regular-text');
   purposeNameInput.placeholder = "ชื่อวัตุประสงค์ความยินยอม";
   purposeNameCol.appendChild(purposeNameInput);

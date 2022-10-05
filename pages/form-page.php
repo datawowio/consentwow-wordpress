@@ -134,21 +134,26 @@ if ( ! isset( $form ) ) {
 						เชื่อมกับข้อมูลความยินยอม
 					</th>
 				</tr>
-				<?php if ( isset( $form['consents'] ) && is_array( $form['consents'] ) && count( $form['consents'] ) > 0 ) : ?>
-				<?php foreach ( $form['consents'] as $index => $consent_purpose ) : ?>
-				<tr class="consentwow-consent-input" id="consentwow-consent-field-<?php echo $consent_purpose['consent_id'] . '-' . $index; ?>">
+				<?php
+				if ( isset( $form['consents'] ) && is_array( $form['consents'] ) && count( $form['consents'] ) > 0 ) :
+					foreach ( $form['consents'] as $index => $consent_purpose ) :
+						$unique_id = $consent_purpose['consent_id'] . '-' . $index;
+				?>
+				<tr class="consentwow-consent-input" id="consentwow-consent-field-<?php echo $unique_id; ?>">
 					<td>
-						<input type="text" name="consentwow_form[][consent_id]" class="regular-text" placeholder="ID ของวัตถุประสงค์" style="width: 185px;" value="<?php echo $consent_purpose['consent_id']; ?>" />
+						<input required type="text" name="consentwow_form[consents][<?php echo $unique_id; ?>][consent_id]" class="regular-text" placeholder="ID ของวัตถุประสงค์" style="width: 185px;" value="<?php echo $consent_purpose['consent_id']; ?>" />
 					</td>
 					<td>
-						<input type="text" name="consentwow_form[][input_id]" class="regular-text" placeholder="ชื่อวัตุประสงค์ความยินยอม" value="<?php echo $consent_purpose['input_id']; ?>" />
-						<button type="button" class="button" id="<?php echo $consent_purpose['consent_id'] . '-' . $index; ?>" style="background-color: red; border: white; color: white; margin-left: 5px;" onclick="handleRemoveButton(event)">
+						<input required type="text" name="consentwow_form[consents][<?php echo $unique_id; ?>][input_id]" class="regular-text" placeholder="ชื่อวัตุประสงค์ความยินยอม" value="<?php echo $consent_purpose['input_id']; ?>" />
+						<button type="button" class="button" id="<?php echo $unique_id; ?>" style="background-color: red; border: white; color: white; margin-left: 5px;" onclick="handleRemoveButton(event)">
 							X
 						</button>
 					</td>
 				</tr>
-				<?php endforeach; ?>
-				<?php endif; ?>
+				<?php
+					endforeach;
+				endif;
+				?>
 			</tbody>
 		</table>
 		<div class="submit">
