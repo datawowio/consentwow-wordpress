@@ -415,12 +415,13 @@ function consentwow_form_post_action() {
 		$action = 'add';
 	}
 
-	$form['form_name'] = consentwow_sanitize_required_input( $fields['form_name'], 'Form Name is required.', $redirect_url );
-	$form['form_id'] = consentwow_sanitize_required_input( $fields['form_id'], 'Form ID is required.', $redirect_url );
-	$form['email'] = consentwow_sanitize_required_input( $fields['email'], 'Email is required.', $redirect_url );
-	$form['first_name'] = consentwow_sanitize_nullable_input( $fields['first_name'] );
-	$form['last_name'] = consentwow_sanitize_nullable_input( $fields['last_name'] );
+	$form['form_name']    = consentwow_sanitize_required_input( $fields['form_name'], 'Form Name is required.', $redirect_url );
+	$form['form_id']      = consentwow_sanitize_required_input( $fields['form_id'], 'Form ID is required.', $redirect_url );
+	$form['email']        = consentwow_sanitize_required_input( $fields['email'], 'Email is required.', $redirect_url );
+	$form['first_name']   = consentwow_sanitize_nullable_input( $fields['first_name'] );
+	$form['last_name']    = consentwow_sanitize_nullable_input( $fields['last_name'] );
 	$form['phone_number'] = consentwow_sanitize_nullable_input( $fields['phone_number'] );
+	$form['consents']     = consentwow_sanitize_consents_input( $fields['consents'] );
 	$form['updated_date'] = time();
 
 	if ( $action === 'add' ) {
@@ -444,6 +445,8 @@ function consentwow_form_post_action() {
  * @param mixed  $value         Input value.
  * @param string $error_message An error message to be set in alert bar if an error occurs.
  * @param string $redirect_url  A URL to redirect if an error occurs.
+ *
+ * @return mixed A sanitized value of required input.
  */
 function consentwow_sanitize_required_input( $value, $error_message, $redirect_url ) {
 	if ( isset( $value ) && ! empty( $value ) ) {
@@ -460,6 +463,8 @@ function consentwow_sanitize_required_input( $value, $error_message, $redirect_u
  * Sanitize nullable input value. Set null value if the value is empty.
  *
  * @param mixed $value Input value.
+ *
+ * @return mixed A sanitized value or a null.
  */
 function consentwow_sanitize_nullable_input( $value ) {
 	if ( isset( $value ) && ! empty( $value ) ) {
@@ -467,6 +472,52 @@ function consentwow_sanitize_nullable_input( $value ) {
 	} else {
 		return null;
 	}
+}
+
+/**
+ * Sanitize consents input value.
+ *
+ * @param array $array Input values from consent mapping inputs.
+ *
+ * @return array An array of sanitized consent mapping.
+ */
+function consentwow_sanitize_consents_input( $array ) {
+	$consents = array();
+
+	foreach ( $array as $consent ) {
+		$sanitized_consent = consentwow_sanitize_consent_input( $consent );
+
+		if ( ! empty( $sanitized_consent ) ) {
+			$consents[] = $sanitized_consent;
+		}
+	}
+
+	return $consents;
+}
+
+/**
+ * Sanitize consent input value. Return null value if the value is invalid.
+ *
+ * @param array $array Input value from consent mapping input.
+ *
+ * @return array Sanitized consent mapping or a null.
+ */
+function consentwow_sanitize_consent_input( $consent ) {
+	if ( ! isset( $consent['consent_id'] ) || ! isset( $consent['input_id'] ) ) {
+		return null;
+	}
+
+	$consent_id = sanitize_text_field( $consent['consent_id'] );
+	$input_id   = sanitize_text_field( $consent['input_id'] );
+
+	if ( empty( $consent_id ) || empty( $input_id ) ) {
+		return null;
+	}
+
+	return array(
+		'consent_id' => $consent_id,
+		'input_id' => $input_id,
+	);
 }
 
 /**
