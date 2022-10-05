@@ -503,20 +503,20 @@ function consentwow_sanitize_consents_input( $array ) {
  * @return array Sanitized consent mapping or a null.
  */
 function consentwow_sanitize_consent_input( $consent ) {
-	if ( ! isset( $consent['consent_id'] ) || ! isset( $consent['input_id'] ) ) {
+	if ( ! isset( $consent['consent_id'] ) || ! isset( $consent['name'] ) ) {
 		return null;
 	}
 
 	$consent_id = sanitize_text_field( $consent['consent_id'] );
-	$input_id   = sanitize_text_field( $consent['input_id'] );
+	$name       = sanitize_text_field( $consent['name'] );
 
-	if ( empty( $consent_id ) || empty( $input_id ) ) {
+	if ( empty( $consent_id ) || empty( $name ) ) {
 		return null;
 	}
 
 	return array(
 		'consent_id' => $consent_id,
-		'input_id' => $input_id,
+		'name'       => $name,
 	);
 }
 

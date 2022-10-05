@@ -144,7 +144,7 @@ if ( ! isset( $form ) ) {
 						<input required type="text" name="consentwow_form[consents][<?php echo $unique_id; ?>][consent_id]" class="regular-text" placeholder="ID ของวัตถุประสงค์" style="width: 185px;" value="<?php echo $consent_purpose['consent_id']; ?>" />
 					</td>
 					<td>
-						<input required type="text" name="consentwow_form[consents][<?php echo $unique_id; ?>][input_id]" class="regular-text" placeholder="ชื่อวัตุประสงค์ความยินยอม" value="<?php echo $consent_purpose['input_id']; ?>" />
+						<input required type="text" name="consentwow_form[consents][<?php echo $unique_id; ?>][name]" class="regular-text" placeholder="ชื่อวัตุประสงค์ความยินยอม" value="<?php echo $consent_purpose['name']; ?>" />
 						<button type="button" class="button" id="<?php echo $unique_id; ?>" style="background-color: red; border: white; color: white; margin-left: 5px;" onclick="handleRemoveButton(event)">
 							X
 						</button>

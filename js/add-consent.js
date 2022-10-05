@@ -24,7 +24,7 @@ function addConsent() {
   const purposeNameInput = document.createElement("input");
   purposeNameInput.required = true;
   purposeNameInput.type = "text";
-  purposeNameInput.name = `consentwow_form[consents][${i}][input_id]`;
+  purposeNameInput.name = `consentwow_form[consents][${i}][name]`;
   purposeNameInput.classList.add('regular-text');
   purposeNameInput.placeholder = "ชื่อวัตุประสงค์ความยินยอม";
   purposeNameCol.appendChild(purposeNameInput);
