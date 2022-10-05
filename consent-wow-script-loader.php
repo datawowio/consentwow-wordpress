@@ -307,7 +307,7 @@ function consentwow_admin_form_new_page() {
  * Add submenu for Edit Form page.
  */
 function consentwow_add_form_edit_page() {
-	$parent_slug = null;
+	$parent_slug = 'options.php';
 	$page_title  = 'Edit a Form - Consent Wow';
 	$menu_title  = 'Edit Form';
 	$capability  = 'manage_options';
