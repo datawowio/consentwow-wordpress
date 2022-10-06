@@ -1,8 +1,11 @@
 <?php
 /**
- * Consent Wow Script Loader
+ * Consent Wow Plugin
  *
- * @package consent-wow-script-loader
+ * @package           consent-wow-plugin
+ * @author            Consent Wow
+ * @copyright         2022 Consent Wow
+ * @license           GPL-3.0-or-later
  */
 
 /**
