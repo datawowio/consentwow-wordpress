@@ -65,3 +65,8 @@ A: Consent Wow จะเหมาะสมที่สุดสำหรับ�
 
 == Screenshots ==
 1. Consent Wow Platform (https://consentwow.com)
+
+== Changelog ==
+= 1.0.0 =
+* API Key Settings
+* Form integration
