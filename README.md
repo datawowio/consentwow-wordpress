@@ -35,7 +35,7 @@ support@consentwow.com
 WordPress Plugin use Subversion as VCS, so pushing codes to Git will not
 directly update the plugin.
 
-However, WordPress says that
+However, WordPress says [that](https://developer.wordpress.org/plugins/wordpress-org/how-to-use-subversion/)
 ```
 Warning:SVN and the Plugin Directory are a release repository. Unlike Git, you
 shouldn’t commit every small change, as doing so can degrade performance. Please
