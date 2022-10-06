@@ -1,8 +1,8 @@
 <?php
 /**
- * Consent Wow Plugin
+ * Consent Wow Consent Solution
  *
- * @package           consent-wow-plugin
+ * @package           consent-wow-consent-solution
  * @author            Consent Wow
  * @copyright         2022 Consent Wow
  * @license           GPL-3.0-or-later
@@ -51,12 +51,12 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
   public function get_columns() {
     $columns = array(
       'cb'           => '<input type="checkbox" />',
-      'id'           => __( 'ID', 'consent-wow-plugin' ),
-      'form_name'    => __( 'Name', 'consent-wow-plugin' ),
-      'form_id'      => __( 'Form ID', 'consent-wow-plugin' ),
-      'status'       => __( 'Status', 'consent-wow-plugin' ),
-      'updated_date' => __( 'Updated Date', 'consent-wow-plugin' ),
-      'action'       => __( 'Action', 'consent-wow-plugin' ),
+      'id'           => __( 'ID', 'consent-wow-consent-solution' ),
+      'form_name'    => __( 'Name', 'consent-wow-consent-solution' ),
+      'form_id'      => __( 'Form ID', 'consent-wow-consent-solution' ),
+      'status'       => __( 'Status', 'consent-wow-consent-solution' ),
+      'updated_date' => __( 'Updated Date', 'consent-wow-consent-solution' ),
+      'action'       => __( 'Action', 'consent-wow-consent-solution' ),
     );
 
     return $columns;
@@ -167,7 +167,7 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
    */
   function get_bulk_actions() {
     $actions = array(
-      'delete_all' => __( 'Delete All', 'consent-wow-plugin' ),
+      'delete_all' => __( 'Delete All', 'consent-wow-consent-solution' ),
     );
     return $actions;
   }
