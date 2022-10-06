@@ -4,7 +4,7 @@
  *
  * @package           consentwow-consent-solution
  * @author            Consent Wow
- * @copyright         2022 nDataThoth Limited
+ * @copyright         2022 Consent Wow
  * @license           GPL-3.0-or-later
  */
 ?>
