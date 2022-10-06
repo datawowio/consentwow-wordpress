@@ -307,7 +307,7 @@ function consentwow_admin_form_new_page() {
  * Add submenu for Edit Form page.
  */
 function consentwow_add_form_edit_page() {
-	$parent_slug = null;
+	$parent_slug = 'options.php';
 	$page_title  = 'Edit a Form - Consent Wow';
 	$menu_title  = 'Edit Form';
 	$capability  = 'manage_options';
@@ -401,7 +401,7 @@ function consentwow_form_post_action() {
 	if ( isset( $fields['id'] ) ) {
 		$id = sanitize_text_field( $fields['id'] );
 		$form = $form_list->find( $id );
-		$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_NEW_SLUG . '&id=' . $id );
+		$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_EDIT_SLUG . '&id=' . $id );
 		$action = 'edit';
 
 		if ( ! isset( $form ) ) {
@@ -415,12 +415,13 @@ function consentwow_form_post_action() {
 		$action = 'add';
 	}
 
-	$form['form_name'] = consentwow_sanitize_required_input( $fields['form_name'], 'Form Name is required.', $redirect_url );
-	$form['form_id'] = consentwow_sanitize_required_input( $fields['form_id'], 'Form ID is required.', $redirect_url );
-	$form['email'] = consentwow_sanitize_required_input( $fields['email'], 'Email is required.', $redirect_url );
-	$form['first_name'] = consentwow_sanitize_nullable_input( $fields['first_name'] );
-	$form['last_name'] = consentwow_sanitize_nullable_input( $fields['last_name'] );
+	$form['form_name']    = consentwow_sanitize_required_input( $fields['form_name'], 'Form Name is required.', $redirect_url );
+	$form['form_id']      = consentwow_sanitize_required_input( $fields['form_id'], 'Form ID is required.', $redirect_url );
+	$form['email']        = consentwow_sanitize_required_input( $fields['email'], 'Email is required.', $redirect_url );
+	$form['first_name']   = consentwow_sanitize_nullable_input( $fields['first_name'] );
+	$form['last_name']    = consentwow_sanitize_nullable_input( $fields['last_name'] );
 	$form['phone_number'] = consentwow_sanitize_nullable_input( $fields['phone_number'] );
+	$form['consents']     = consentwow_sanitize_consents_input( $fields['consents'] );
 	$form['updated_date'] = time();
 
 	if ( $action === 'add' ) {
@@ -444,6 +445,8 @@ function consentwow_form_post_action() {
  * @param mixed  $value         Input value.
  * @param string $error_message An error message to be set in alert bar if an error occurs.
  * @param string $redirect_url  A URL to redirect if an error occurs.
+ *
+ * @return mixed A sanitized value of required input.
  */
 function consentwow_sanitize_required_input( $value, $error_message, $redirect_url ) {
 	if ( isset( $value ) && ! empty( $value ) ) {
@@ -460,6 +463,8 @@ function consentwow_sanitize_required_input( $value, $error_message, $redirect_u
  * Sanitize nullable input value. Set null value if the value is empty.
  *
  * @param mixed $value Input value.
+ *
+ * @return mixed A sanitized value or a null.
  */
 function consentwow_sanitize_nullable_input( $value ) {
 	if ( isset( $value ) && ! empty( $value ) ) {
@@ -467,6 +472,52 @@ function consentwow_sanitize_nullable_input( $value ) {
 	} else {
 		return null;
 	}
+}
+
+/**
+ * Sanitize consents input value.
+ *
+ * @param array $array Input values from consent mapping inputs.
+ *
+ * @return array An array of sanitized consent mapping.
+ */
+function consentwow_sanitize_consents_input( $array ) {
+	$consents = array();
+
+	foreach ( $array as $consent ) {
+		$sanitized_consent = consentwow_sanitize_consent_input( $consent );
+
+		if ( ! empty( $sanitized_consent ) ) {
+			$consents[] = $sanitized_consent;
+		}
+	}
+
+	return $consents;
+}
+
+/**
+ * Sanitize consent input value. Return null value if the value is invalid.
+ *
+ * @param array $array Input value from consent mapping input.
+ *
+ * @return array Sanitized consent mapping or a null.
+ */
+function consentwow_sanitize_consent_input( $consent ) {
+	if ( ! isset( $consent['consent_id'] ) || ! isset( $consent['name'] ) ) {
+		return null;
+	}
+
+	$consent_id = sanitize_text_field( $consent['consent_id'] );
+	$name       = sanitize_text_field( $consent['name'] );
+
+	if ( empty( $consent_id ) || empty( $name ) ) {
+		return null;
+	}
+
+	return array(
+		'consent_id' => $consent_id,
+		'name'       => $name,
+	);
 }
 
 /**
@@ -528,7 +579,7 @@ function consentwow_enqueue_scripts() {
 	}
 
 	$script_name  = 'consentwow_script';
-	$src          = 'https://cdn.consentwow.com/script.js';
+	$src          = 'https://cdn.consentwow.com/script.min.js';
 	$dependencies = array( 'jquery' );
 	$version      = null;
 	$in_footer    = false;
@@ -601,6 +652,27 @@ function consentwow_script_loader_tag( $tag, $script_name, $src ) {
 	return $tag;
 }
 
+/**
+ * Load javascript into adding/editing form page.
+ */
+function consentwow_admin_form_page_scripts( $hook ) {
+	$pages = array(
+		'consent-wow_page_consentwow-form-new',
+		'admin_page_consentwow-form-edit',
+	);
+
+	if ( ! in_array( $hook, $pages ) ) {
+		return;
+	}
+
+	$script_name = 'consentwow_admin_form_page_script';
+	$src         = plugin_dir_url( __FILE__ ) . 'js/add-consent.js';
+	$deps        = array();
+	$version     = null;
+	$in_footer   = false;
+	wp_enqueue_script( $script_name, $src, $deps, $version, $in_footer );
+}
+
 add_action( 'admin_init', 'consentwow_admin_init' );
 add_action( 'admin_menu', 'consentwow_admin_menu' );
 add_action( 'admin_notices', 'consentwow_admin_notices' );
@@ -608,6 +680,7 @@ add_action( 'admin_action_consentwow_form_post', 'consentwow_form_post_action' )
 add_action( 'admin_action_consentwow_form_delete', 'consentwow_form_delete_action' );
 add_action( 'admin_action_consentwow_form_bulk_action_delete_all', 'consentwow_form_bulk_action_delete_all_action' );
 add_action( 'wp_enqueue_scripts', 'consentwow_enqueue_scripts' );
+add_action( 'admin_enqueue_scripts', 'consentwow_admin_form_page_scripts' );
 add_filter( 'plugin_action_links_' . plugin_basename( WP_CONSENTWOW_FILE ), 'consentwow_settings_action_links' );
 add_filter( 'set_screen_option_consentwow_forms_per_page', 'consentwow_form_list_set_screen_option', 10, 3 );
 add_filter( 'script_loader_tag', 'consentwow_script_loader_tag', $priority = 1, $accepted_args = 3 );

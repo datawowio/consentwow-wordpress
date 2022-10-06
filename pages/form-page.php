@@ -24,8 +24,7 @@ if ( ! isset( $form ) ) {
 ?>
 <div class="wrap">
 	<h1 class="wp-heading-inline"><?php echo $title ?></h1>
-	<h4>ปลั๊กอินนี้สนับสนุนเฉพาะแบบฟอร์มประเภท Contact Form (CF7) 
-		คุณสามารถอ่านวิธีการติดตั้งและรายละเอียดการเพิ่มแบบฟอร์มได้ ที่นี่ </h4>
+	<h4>ปลั๊กอินนี้สนับสนุนเฉพาะแบบฟอร์มประเภท Contact Form (CF7) คุณสามารถอ่านวิธีการติดตั้งและรายละเอียดการเพิ่มแบบฟอร์มได้ ที่นี่</h4>
 	<form action="<?php echo admin_url( 'admin.php?action=consentwow_form_post' ); ?>" method="post">
 		<?php consentwow_form_display_notice(); ?>
 		<?php if ( $action == 'edit' ) : ?>
@@ -39,14 +38,14 @@ if ( ! isset( $form ) ) {
 						<label for="consentwow_form_name">ชื่อฟอร์ม</label>
 					</th>
 					<td>
-						<input 
-							required 
-							type="text" 
-							id="consentwow_form_name" 
-							name="consentwow_form[form_name]" 
-							placeholder="Contact form" 
-							class="regular-text" 
-							value="<?php echo isset( $form['form_name'] ) ? $form['form_name'] : ''; ?>" 
+						<input
+							required
+							type="text"
+							id="consentwow_form_name"
+							name="consentwow_form[form_name]"
+							placeholder="Contact form"
+							class="regular-text"
+							value="<?php echo isset( $form['form_name'] ) ? $form['form_name'] : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -55,14 +54,14 @@ if ( ! isset( $form ) ) {
 						<label for="consentwow_form_id">ฟอร์ม ID</label>
 					</th>
 					<td>
-						<input 
-							required 
-							type="text" 
-							id="consentwow_form_id" 
-							name="consentwow_form[form_id]" 
-							placeholder="1" 
-							class="regular-text" 
-							value="<?php echo isset( $form['form_id'] ) ? $form['form_id'] : ''; ?>" 
+						<input
+							required
+							type="text"
+							id="consentwow_form_id"
+							name="consentwow_form[form_id]"
+							placeholder="1"
+							class="regular-text"
+							value="<?php echo isset( $form['form_id'] ) ? $form['form_id'] : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -74,14 +73,14 @@ if ( ! isset( $form ) ) {
 						<label for="consentwow_email">Email (UID)</label>
 					</th>
 					<td>
-						<input 
-							required 
-							type="text" 
-							id="consentwow_email" 
-							name="consentwow_form[email]" 
-							placeholder="อีเมลแอดเดรส" 
-							class="regular-text" 
-							value="<?php echo isset( $form['email'] ) ? $form['email'] : ''; ?>" 
+						<input
+							required
+							type="text"
+							id="consentwow_email"
+							name="consentwow_form[email]"
+							placeholder="อีเมลแอดเดรส"
+							class="regular-text"
+							value="<?php echo isset( $form['email'] ) ? $form['email'] : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -90,13 +89,13 @@ if ( ! isset( $form ) ) {
 						<label for="consentwow_first_name">ชื่อจริง</label>
 					</th>
 					<td>
-						<input 
-							type="text" 
-							id="consentwow_first_name" 
-							name="consentwow_form[first_name]" 
-							placeholder="ชื่อจริง" 
-							class="regular-text" 
-							value="<?php echo isset( $form['first_name'] ) ? $form['first_name'] : ''; ?>" 
+						<input
+							type="text"
+							id="consentwow_first_name"
+							name="consentwow_form[first_name]"
+							placeholder="ชื่อจริง"
+							class="regular-text"
+							value="<?php echo isset( $form['first_name'] ) ? $form['first_name'] : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -105,13 +104,13 @@ if ( ! isset( $form ) ) {
 						<label for="consentwow_last_name">นามสกุล</label>
 					</th>
 					<td>
-						<input 
-							type="text" 
-							id="consentwow_last_name" 
-							name="consentwow_form[last_name]" 
-							placeholder="นามสกุล" 
-							class="regular-text" 
-							value="<?php echo isset( $form['last_name'] ) ? $form['last_name'] : ''; ?>" 
+						<input
+							type="text"
+							id="consentwow_last_name"
+							name="consentwow_form[last_name]"
+							placeholder="นามสกุล"
+							class="regular-text"
+							value="<?php echo isset( $form['last_name'] ) ? $form['last_name'] : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -120,13 +119,13 @@ if ( ! isset( $form ) ) {
 						<label for="consentwow_phone_number">เบอร์โทรศัพท์</label>
 					</th>
 					<td>
-						<input 
-							type="text" 
-							id="consentwow_phone_number" 
-							name="consentwow_form[phone_number]" 
-							placeholder="เบอร์โทรศัพท์" 
-							class="regular-text" 
-							value="<?php echo isset( $form['phone_number'] ) ? $form['phone_number'] : ''; ?>" 
+						<input
+							type="text"
+							id="consentwow_phone_number"
+							name="consentwow_form[phone_number]"
+							placeholder="เบอร์โทรศัพท์"
+							class="regular-text"
+							value="<?php echo isset( $form['phone_number'] ) ? $form['phone_number'] : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -135,62 +134,35 @@ if ( ! isset( $form ) ) {
 						เชื่อมกับข้อมูลความยินยอม
 					</th>
 				</tr>
+				<?php
+				if ( isset( $form['consents'] ) && is_array( $form['consents'] ) && count( $form['consents'] ) > 0 ) :
+					foreach ( $form['consents'] as $index => $consent_purpose ) :
+						$unique_id = $consent_purpose['consent_id'] . '-' . $index;
+				?>
+				<tr class="consentwow-consent-input" id="consentwow-consent-field-<?php echo $unique_id; ?>">
+					<td>
+						<input required type="text" name="consentwow_form[consents][<?php echo $unique_id; ?>][consent_id]" class="regular-text" placeholder="ID ของวัตถุประสงค์" style="width: 185px;" value="<?php echo $consent_purpose['consent_id']; ?>" />
+					</td>
+					<td>
+						<input required type="text" name="consentwow_form[consents][<?php echo $unique_id; ?>][name]" class="regular-text" placeholder="ชื่อวัตุประสงค์ความยินยอม" value="<?php echo $consent_purpose['name']; ?>" />
+						<button type="button" class="button" id="<?php echo $unique_id; ?>" style="background-color: red; border: white; color: white; margin-left: 5px;" onclick="handleRemoveButton(event)">
+							X
+						</button>
+					</td>
+				</tr>
+				<?php
+					endforeach;
+				endif;
+				?>
 			</tbody>
 		</table>
 		<div class="submit">
-			<button class="button button-primary" style="width:fit-content;" onclick="addConsent()"> + เพิ่มการเชื่อมต่อกับข้อมูลความยินยอม </button>
+			<button type="button" class="button button-primary" style="width:fit-content;" onclick="addConsent()">
+				+ เพิ่มการเชื่อมต่อกับข้อมูลความยินยอม
+			</button>
 		</div>
 		<div class="submit">
-			<input type="submit" name="submit" id="submit" class="button button-primary" value="เพิ่มฟอร์ม">
+			<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo ( $action == 'add' ) ? 'เพิ่มฟอร์ม' : 'บันทึกฟอร์ม'; ?>">
 		</div>
 	</form>
-	<script>
-		let i = 0;
-		
-		const addConsent = () => {
-			const contentTable = document.getElementsByTagName('tbody');
-
-			const tag = document.createElement('tr');
-			tag.classList.add('consentwow-consent-input');
-			tag.id = `consentwow-consent-field-${i}`;
-
-			// add purpose key field
-			const purposeKeyCol = document.createElement('td');
-			const purposeKeyInput = document.createElement("input");
-			purposeKeyInput.type = "text";
-			purposeKeyInput.name = `consentwow_form[conset_key_${i}]`;
-			purposeKeyInput.classList.add('regular-text');
-			purposeKeyInput.placeholder = "ID ของวัตถุประสงค์";
-			purposeKeyInput.style = "width:185px;";
-			purposeKeyCol.appendChild(purposeKeyInput);
-			tag.appendChild(purposeKeyCol);
-
-			// add purpose key field
-			const purposeNameCol = document.createElement('td');
-			const purposeNameInput = document.createElement("input");
-			purposeNameInput.type = "text";
-			purposeNameInput.name = `consentwow_form[conset_name_${i}]`;
-			purposeNameInput.classList.add('regular-text');
-			purposeNameInput.placeholder = "ชื่อวัตุประสงค์ความยินยอม";
-			purposeNameCol.appendChild(purposeNameInput);
-
-			// add remove button
-			const removeButton = document.createElement("button");
-			removeButton.classList.add('button');
-			removeButton.style = "background-color:red; border: white; color: white; margin-left: 5px";
-			removeButton.textContent = 'X';
-			removeButton.id = i;
-			removeButton.onclick = e => {
-				const id = e.target.id;
-				document.getElementById(`consentwow-consent-field-${id}`).remove();
-			}
-
-			purposeNameCol.appendChild(removeButton);
-			tag.appendChild(purposeNameCol);
-
-			// add child to parent
-			contentTable[0].appendChild(tag);
-			i += 1;
-		}
-    </script>
 </div>
