@@ -14,7 +14,7 @@ consent.
 
 1. Download the plugin.
 2. Zip /trunk folder (or another version in /tags/*version*) and name it
-   `consentwow-consent-solution.zip`.
+   `consent-wow-plugin.zip`.
 3. Upload zip file into your WordPress.
 4. Activate the plugin.
 5. Set an API Key from Consent Wow.

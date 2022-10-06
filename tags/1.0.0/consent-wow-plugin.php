@@ -1,14 +1,14 @@
 <?php
 /**
- * Consent Wow | PDPA Consent Solution
+ * Consent Wow Plugin
  *
- * @package           consentwow-consent-solution
+ * @package           consent-wow-plugin
  * @author            Consent Wow
  * @copyright         2022 Consent Wow
  * @license           GPL-3.0-or-later
  *
  * @wordpress-plugin
- * Plugin Name:       Consent Wow | PDPA Consent Solution
+ * Plugin Name:       Consent Wow Plugin
  * Plugin URI:        https://github.com/datawowio/consentwow-wordpress
  * Description:       PDPA-compliant consent management for your web forms.
  * Version:           1.0.0
@@ -84,7 +84,7 @@ function consentwow_sanitize_api_token( $api_token ) {
 		add_settings_error(
 			WP_CONSENTWOW_SLUG,
 			'settings-notice',
-			__( 'API Key is Required.', 'consentwow-consent-solution' ),
+			__( 'API Key is Required.', 'consent-wow-plugin' ),
 		);
 
 		return $original_value;
@@ -128,7 +128,7 @@ function consentwow_fetch_consent_purposes( $api_token ) {
 			$message = 'Something went wrong, please try again later or contact our support for more information.';
 		}
 
-		return new WP_Error( $status, __( $message, 'consentwow-consent-solution' ) );
+		return new WP_Error( $status, __( $message, 'consent-wow-plugin' ) );
 	}
 
 	if ( isset( $body['data'] ) ) {
@@ -223,7 +223,7 @@ function consentwow_add_form_list_page() {
 		$option = 'per_page';
 
 		$args = array(
-			'label'   => __( 'Number of Forms Per Page', 'consentwow-consent-solution' ),
+			'label'   => __( 'Number of Forms Per Page', 'consent-wow-plugin' ),
 			'default' => 20,
 			'option'  => 'consentwow_forms_per_page',
 		);
@@ -338,7 +338,7 @@ function consentwow_admin_notices() {
 		add_settings_error(
 			WP_CONSENTWOW_SLUG,
 			'settings-notice',
-			__( 'Settings Updated', 'consentwow-consent-solution' ),
+			__( 'Settings Updated', 'consent-wow-plugin' ),
 			'success',
 		);
 	}
@@ -354,7 +354,7 @@ function consentwow_admin_notices() {
  * @return string[] $actions An array of plugin action links including a link to settings page.
  */
 function consentwow_settings_action_links( $actions ) {
-	array_unshift( $actions, sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=' . WP_CONSENTWOW_SLUG ), __( 'Settings', 'consentwow-consent-solution' ) ) );
+	array_unshift( $actions, sprintf( '<a href="%s">%s</a>', admin_url( 'admin.php?page=' . WP_CONSENTWOW_SLUG ), __( 'Settings', 'consent-wow-plugin' ) ) );
 
 	return $actions;
 }
@@ -378,7 +378,7 @@ function consentwow_uninstall() {
 function consentwow_form_add_settings_notice( $message, $redirect_url = null, $type = 'error' ) {
 	set_transient(
 		'consentwow_form_notice',
-		array( 'message' => __( $message, 'consentwow-consent-solution' ), 'type' => $type ),
+		array( 'message' => __( $message, 'consent-wow-plugin' ), 'type' => $type ),
 	);
 
 	if ( ! empty( $redirect_url ) && wp_safe_redirect( $redirect_url ) ) {
