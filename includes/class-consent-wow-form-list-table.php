@@ -1,8 +1,11 @@
 <?php
 /**
- * Consent Wow Script Loader
+ * Consent Wow | PDPA Consent Solution
  *
- * @package consent-wow-script-loader
+ * @package           consentwow-consent-solution
+ * @author            Consent Wow
+ * @copyright         2022 nDataThoth Limited
+ * @license           GPL-3.0-or-later
  */
 
 /**
@@ -48,12 +51,12 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
   public function get_columns() {
     $columns = array(
       'cb'           => '<input type="checkbox" />',
-      'id'           => __( 'ID', 'consentwow' ),
-      'form_name'    => __( 'Name', 'consentwow' ),
-      'form_id'      => __( 'Form ID', 'consentwow' ),
-      'status'       => __( 'Status', 'consentwow' ),
-      'updated_date' => __( 'Updated Date', 'consentwow' ),
-      'action'       => __( 'Action', 'consentwow' ),
+      'id'           => __( 'ID', 'consentwow-consent-solution' ),
+      'form_name'    => __( 'Name', 'consentwow-consent-solution' ),
+      'form_id'      => __( 'Form ID', 'consentwow-consent-solution' ),
+      'status'       => __( 'Status', 'consentwow-consent-solution' ),
+      'updated_date' => __( 'Updated Date', 'consentwow-consent-solution' ),
+      'action'       => __( 'Action', 'consentwow-consent-solution' ),
     );
 
     return $columns;
@@ -164,7 +167,7 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
    */
   function get_bulk_actions() {
     $actions = array(
-      'delete_all' => __( 'Delete All', 'consentwow' ),
+      'delete_all' => __( 'Delete All', 'consentwow-consent-solution' ),
     );
     return $actions;
   }

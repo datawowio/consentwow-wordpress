@@ -1,8 +1,11 @@
 <?php
 /**
- * Consent Wow Script Loader
+ * Consent Wow | PDPA Consent Solution
  *
- * @package consent-wow-script-loader
+ * @package           consentwow-consent-solution
+ * @author            Consent Wow
+ * @copyright         2022 nDataThoth Limited
+ * @license           GPL-3.0-or-later
  */
 ?>
 <div class="wrap">
