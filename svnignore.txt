@@ -1,0 +1,6 @@
+svnignore.txt
+README.md
+.github
+.git
+.gitignore
+.DS_Store
