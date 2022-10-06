@@ -1,8 +1,8 @@
 <?php
 /**
- * Consent Wow Plugin
+ * Consent Wow Consent Solution
  *
- * @package           consent-wow-plugin
+ * @package           consent-wow-consent-solution
  * @author            Consent Wow
  * @copyright         2022 Consent Wow
  * @license           GPL-3.0-or-later
