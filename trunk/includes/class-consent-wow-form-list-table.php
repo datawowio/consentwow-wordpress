@@ -158,7 +158,7 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
       $orderby = 'id';
     }
 
-    if ( isset( $_GET['order'] ) && in_array( $_GET['order'], array( 'asc', 'desc' ) ) {
+    if ( isset( $_GET['order'] ) && in_array( $_GET['order'], array( 'asc', 'desc' ) ) ) {
       $order = $_GET['order'];
     } else {
       $order = 'asc';
