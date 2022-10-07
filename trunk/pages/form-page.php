@@ -14,7 +14,7 @@ $form_list = new Consent_Wow_Form_List();
 
 if ( isset( $_GET['id'] ) && ! empty( $_GET['id'] ) ) {
 	$action = 'edit';
-	$id = $_GET['id'];
+	$id = esc_attr( $_GET['id'] );
 	$title = "Edit a Form#{$id}";
 	$form = $form_list->find( $id );
 }
@@ -48,7 +48,7 @@ if ( ! isset( $form ) ) {
 							name="consentwow_form[form_name]"
 							placeholder="Contact form"
 							class="regular-text"
-							value="<?php echo isset( $form['form_name'] ) ? $form['form_name'] : ''; ?>"
+							value="<?php echo isset( $form['form_name'] ) ? esc_attr( $form['form_name'] ) : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -64,7 +64,7 @@ if ( ! isset( $form ) ) {
 							name="consentwow_form[form_id]"
 							placeholder="1"
 							class="regular-text"
-							value="<?php echo isset( $form['form_id'] ) ? $form['form_id'] : ''; ?>"
+							value="<?php echo isset( $form['form_id'] ) ? esc_attr( $form['form_id'] ) : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -83,7 +83,7 @@ if ( ! isset( $form ) ) {
 							name="consentwow_form[email]"
 							placeholder="อีเมลแอดเดรส"
 							class="regular-text"
-							value="<?php echo isset( $form['email'] ) ? $form['email'] : ''; ?>"
+							value="<?php echo isset( $form['email'] ) ? esc_attr( $form['email'] ) : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -98,7 +98,7 @@ if ( ! isset( $form ) ) {
 							name="consentwow_form[first_name]"
 							placeholder="ชื่อจริง"
 							class="regular-text"
-							value="<?php echo isset( $form['first_name'] ) ? $form['first_name'] : ''; ?>"
+							value="<?php echo isset( $form['first_name'] ) ? esc_attr( $form['first_name'] ) : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -113,7 +113,7 @@ if ( ! isset( $form ) ) {
 							name="consentwow_form[last_name]"
 							placeholder="นามสกุล"
 							class="regular-text"
-							value="<?php echo isset( $form['last_name'] ) ? $form['last_name'] : ''; ?>"
+							value="<?php echo isset( $form['last_name'] ) ? esc_attr( $form['last_name'] ) : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -128,7 +128,7 @@ if ( ! isset( $form ) ) {
 							name="consentwow_form[phone_number]"
 							placeholder="เบอร์โทรศัพท์"
 							class="regular-text"
-							value="<?php echo isset( $form['phone_number'] ) ? $form['phone_number'] : ''; ?>"
+							value="<?php echo isset( $form['phone_number'] ) ? esc_attr( $form['phone_number'] ) : ''; ?>"
 						/>
 					</td>
 				</tr>
@@ -140,14 +140,18 @@ if ( ! isset( $form ) ) {
 				<?php
 				if ( isset( $form['consents'] ) && is_array( $form['consents'] ) && count( $form['consents'] ) > 0 ) :
 					foreach ( $form['consents'] as $index => $consent_purpose ) :
-						$unique_id = $consent_purpose['consent_id'] . '-' . $index;
+						if ( isset( $consent_purpose['consent_id'] ) && isset( $consent_purpose['name'] ) ) :
+							$consent_id = esc_attr( $consent_purpose['consent_id'] );
+							$name = esc_attr( $consent_purpose['name'] );
+
+							$unique_id = $consent_id . '-' . $index;
 				?>
 				<tr class="consentwow-consent-input" id="consentwow-consent-field-<?php echo $unique_id; ?>">
 					<td>
-						<input required type="text" name="consentwow_form[consents][<?php echo $unique_id; ?>][consent_id]" class="regular-text" placeholder="ID ของวัตถุประสงค์" style="width: 185px;" value="<?php echo $consent_purpose['consent_id']; ?>" />
+						<input required type="text" name="consentwow_form[consents][<?php echo $unique_id; ?>][consent_id]" class="regular-text" placeholder="ID ของวัตถุประสงค์" style="width: 185px;" value="<?php echo $consent_id; ?>" />
 					</td>
 					<td>
-						<input required type="text" name="consentwow_form[consents][<?php echo $unique_id; ?>][name]" class="regular-text" placeholder="ชื่อวัตุประสงค์ความยินยอม" value="<?php echo $consent_purpose['name']; ?>" />
+						<input required type="text" name="consentwow_form[consents][<?php echo $unique_id; ?>][name]" class="regular-text" placeholder="ชื่อวัตุประสงค์ความยินยอม" value="<?php echo $name; ?>" />
 						<button type="button" class="button" id="<?php echo $unique_id; ?>" style="background-color: red; border: white; color: white; margin-left: 5px;" onclick="handleRemoveButton(event)">
 							X
 						</button>
