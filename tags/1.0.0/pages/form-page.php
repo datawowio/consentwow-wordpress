@@ -14,7 +14,7 @@ $form_list = new Consent_Wow_Form_List();
 
 if ( isset( $_GET['id'] ) && ! empty( $_GET['id'] ) ) {
 	$action = 'edit';
-	$id = $_GET['id'];
+	$id = esc_attr( $_GET['id'] );
 	$title = "Edit a Form#{$id}";
 	$form = $form_list->find( $id );
 }

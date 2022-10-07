@@ -396,13 +396,14 @@ function consentwow_form_post_action() {
 
 	$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_NEW_SLUG );
 
-	$fields = $_POST['consentwow_form'];
-	if ( ! isset( $fields ) || empty( $fields ) ) {
+	if ( ! isset( $_POST['consentwow_form'] ) || empty( $_POST['consentwow_form'] ) || ! is_array( $_POST['consentwow_form'] ) ) {
 		consentwow_form_add_settings_notice(
 			'Invalid Form Data.',
 			$redirect_url,
 		);
 	}
+
+	$fields = $_POST['consentwow_form'];
 
 	if ( isset( $fields['id'] ) ) {
 		$id = sanitize_text_field( $fields['id'] );
@@ -530,9 +531,8 @@ function consentwow_sanitize_consent_input( $consent ) {
  * Handler function for deleting a form.
  */
 function consentwow_form_delete_action() {
-	$id = $_REQUEST['id'];
-
-	if ( isset( $id ) && ! empty( $id ) ) {
+	if ( isset( $_REQUEST['id'] ) && ! empty( $_REQUEST['id'] ) ) {
+		$id = esc_attr( $_REQUEST['id'] );
 		$form_list = new Consent_Wow_Form_List();
 		$form_list->delete( $id );
 	} else {
@@ -553,18 +553,35 @@ function consentwow_form_delete_action() {
  * Handler function for deleting many forms from bulk action.
  */
 function consentwow_form_bulk_action_delete_all_action() {
-	$form_ids = $_REQUEST['consentwow_forms'];
 	$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_LIST_SLUG );
 
-	if ( isset( $form_ids ) && empty( $form_ids ) ) {
+	if ( isset( $_REQUEST['consentwow_forms'] ) && empty( $_REQUEST['consentwow_forms'] ) ) {
 		consentwow_form_add_settings_notice(
 			'You must select at least 1 form to be deleted.',
 			$redirect_url,
 		);
 	}
 
+	$form_ids = $_REQUEST['consentwow_forms'];
+
+	if ( ! is_array( $form_ids ) ) {
+		consentwow_form_add_settings_notice(
+			'Your input data is invalid',
+			$redirect_url,
+		);
+	}
+
+	$sanitized_form_ids = array();
+	foreach ( $form_ids as $form_id ) {
+		$sanitized_form_id = sanitize_text_field( $form_id );
+
+		if ( ! empty( $sanitized_form_id ) ) {
+			array_push( $sanitized_form_ids, $sanitized_form_id );
+		}
+	}
+
 	$form_list = new Consent_Wow_Form_List();
-	$form_list->delete_many( $form_ids );
+	$form_list->delete_many( $sanitized_form_ids );
 
 	consentwow_form_add_settings_notice(
 		'Delete form(s) successfully',
