@@ -158,6 +158,7 @@ if ( ! isset( $form ) ) {
 					</td>
 				</tr>
 				<?php
+						endif;
 					endforeach;
 				endif;
 				?>
