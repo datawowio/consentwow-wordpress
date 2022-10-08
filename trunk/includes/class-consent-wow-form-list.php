@@ -41,8 +41,11 @@ class Consent_Wow_Form_List {
    */
   public function update( $id, $form ) {
     $index = array_search( $id, array_column( $this->forms, 'id' ) );
-		$this->forms = array_replace( $this->forms, array( $index => $form ) );
-    update_option( $this->option_name, $this->forms );
+
+    if ( $index !== false ) {
+      $this->forms = array_replace( $this->forms, array( $index => $form ) );
+      update_option( $this->option_name, $this->forms );
+    }
   }
 
   /**
@@ -52,8 +55,11 @@ class Consent_Wow_Form_List {
    */
   public function delete( $id ) {
     $index = array_search( $id, array_column( $this->forms, 'id' ) );
-    array_splice( $this->forms, $index, 1 );
-    update_option( $this->option_name, $this->forms );
+
+    if ( $index !== false ) {
+      array_splice( $this->forms, $index, 1 );
+      update_option( $this->option_name, $this->forms );
+    }
   }
 
   /**
@@ -62,12 +68,13 @@ class Consent_Wow_Form_List {
    * @param array $ids A list of ID of the form to be deleted.
    */
   public function delete_many( $ids ) {
-    $this->forms = array_filter(
-      $this->forms,
-      function ( $item ) use ( $ids ) {
-        return ! in_array( $item['id'], $ids );
+    foreach ( $ids as $id ) {
+      $index = array_search( $id, array_column( $this->forms, 'id' ) );
+
+      if ( $index !== false ) {
+        array_splice( $this->forms, $index, 1 );
       }
-    );
+    }
 
     update_option( $this->option_name, $this->forms );
   }
