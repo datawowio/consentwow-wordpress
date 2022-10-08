@@ -14,25 +14,27 @@ $form_list = new Consent_Wow_Form_List();
 
 if ( isset( $_GET['id'] ) && ! empty( $_GET['id'] ) ) {
 	$action = 'edit';
-	$id = esc_attr( $_GET['id'] );
-	$title = "Edit a Form#{$id}";
+	$id = sanitize_text_field( $_GET['id'] );
+	$title = __( "Edit a Form#{$id}", 'consent-wow-consent-solution' );
+	$button = __( 'บันทึกฟอร์ม', 'consent-wow-consent-solution' );
 	$form = $form_list->find( $id );
 }
 
 if ( ! isset( $form ) ) {
 	$action = 'add';
-	$title = 'Create a new Form';
+	$title = __( 'Create a new Form', 'consent-wow-consent-solution' );
+	$button = __( 'เพิ่มฟอร์ม', 'consent-wow-consent-solution' );
 	$form = array();
 }
 ?>
 <div class="wrap">
-	<h1 class="wp-heading-inline"><?php echo $title ?></h1>
+	<h1 class="wp-heading-inline"><?php echo esc_attr( $title ); ?></h1>
 	<h4>ปลั๊กอินนี้สนับสนุนเฉพาะแบบฟอร์มประเภท Contact Form (CF7) คุณสามารถอ่านวิธีการติดตั้งและรายละเอียดการเพิ่มแบบฟอร์มได้ ที่นี่</h4>
 	<form action="<?php echo admin_url( 'admin.php?action=consentwow_form_post' ); ?>" method="post">
 		<?php consentwow_form_display_notice(); ?>
 		<?php if ( $action == 'edit' ) : ?>
 		<input type="hidden" name="action" value="consentwow_form_post" />
-		<input name="consentwow_form[id]" type="hidden" value="<?php echo $id; ?>" />
+		<input name="consentwow_form[id]" type="hidden" value="<?php echo esc_attr( $id ); ?>" />
 		<?php endif; ?>
 		<table class="form-table" role="presentation">
 			<tbody>
@@ -141,18 +143,17 @@ if ( ! isset( $form ) ) {
 				if ( isset( $form['consents'] ) && is_array( $form['consents'] ) && count( $form['consents'] ) > 0 ) :
 					foreach ( $form['consents'] as $index => $consent_purpose ) :
 						if ( isset( $consent_purpose['consent_id'] ) && isset( $consent_purpose['name'] ) ) :
-							$consent_id = esc_attr( $consent_purpose['consent_id'] );
-							$name = esc_attr( $consent_purpose['name'] );
-
-							$unique_id = $consent_id . '-' . $index;
+							$consent_id = $consent_purpose['consent_id'];
+							$name       = $consent_purpose['name'];
+							$unique_id  = $consent_id . '-' . $index;
 				?>
-				<tr class="consentwow-consent-input" id="consentwow-consent-field-<?php echo $unique_id; ?>">
+				<tr class="consentwow-consent-input" id="consentwow-consent-field-<?php echo esc_attr( $unique_id ); ?>">
 					<td>
-						<input required type="text" name="consentwow_form[consents][<?php echo $unique_id; ?>][consent_id]" class="regular-text" placeholder="ID ของวัตถุประสงค์" style="width: 185px;" value="<?php echo $consent_id; ?>" />
+						<input required type="text" name="consentwow_form[consents][<?php echo esc_attr( $unique_id ); ?>][consent_id]" class="regular-text" placeholder="ID ของวัตถุประสงค์" style="width: 185px;" value="<?php echo esc_attr( $consent_id ); ?>" />
 					</td>
 					<td>
-						<input required type="text" name="consentwow_form[consents][<?php echo $unique_id; ?>][name]" class="regular-text" placeholder="ชื่อวัตุประสงค์ความยินยอม" value="<?php echo $name; ?>" />
-						<button type="button" class="button" id="<?php echo $unique_id; ?>" style="background-color: red; border: white; color: white; margin-left: 5px;" onclick="handleRemoveButton(event)">
+						<input required type="text" name="consentwow_form[consents][<?php echo esc_attr( $unique_id ); ?>][name]" class="regular-text" placeholder="ชื่อวัตุประสงค์ความยินยอม" value="<?php echo esc_attr( $name ); ?>" />
+						<button type="button" class="button" id="<?php echo esc_attr( $unique_id ); ?>" style="background-color: red; border: white; color: white; margin-left: 5px;" onclick="handleRemoveButton(event)">
 							X
 						</button>
 					</td>
@@ -170,7 +171,7 @@ if ( ! isset( $form ) ) {
 			</button>
 		</div>
 		<div class="submit">
-			<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo ( $action == 'add' ) ? 'เพิ่มฟอร์ม' : 'บันทึกฟอร์ม'; ?>">
+			<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php echo esc_attr( $button ); ?>">
 		</div>
 	</form>
 </div>

@@ -235,9 +235,15 @@ function consentwow_add_form_list_page() {
 	 * Handler function for bulk action feature.
 	 */
 	function consentwow_form_list_handle_bulk_action() {
-		if ( isset( $_GET['action'] ) && $_GET['action'] == 'delete_all' ) {
+		if ( isset( $_REQUEST['_wp_http_referer'] ) ) {
+			$referer = $_REQUEST['_wp_http_referer'];
+		} else {
+			$referer = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_LIST_SLUG );
+		}
+
+		if ( isset( $_GET['action'] ) && $_GET['action'] == 'delete_all' && isset( $_GET['consentwow_forms'] ) ) {
 			$action_url = admin_url( 'admin.php?action=consentwow_form_bulk_action_delete_all' );
-			$consentwow_forms = $_GET['consentwow_forms'];
+			$consentwow_forms = consentwow_sanitize_form_ids( $_GET['consentwow_forms'], $referer );
 			$redirect_url = add_query_arg( 'consentwow_forms', $consentwow_forms, $action_url );
 
 			if ( wp_safe_redirect( $redirect_url ) ) {
@@ -246,7 +252,7 @@ function consentwow_add_form_list_page() {
 		} else if ( isset( $_GET['action'] ) && $_GET['action'] == -1 ) {
 			consentwow_form_add_settings_notice(
 				'Invalid Action',
-				$_REQUEST['_wp_http_referer'],
+				$referer,
 			);
 		}
 	}
@@ -403,10 +409,8 @@ function consentwow_form_post_action() {
 		);
 	}
 
-	$fields = $_POST['consentwow_form'];
-
-	if ( isset( $fields['id'] ) ) {
-		$id = sanitize_text_field( $fields['id'] );
+	if ( isset( $_POST['consentwow_form[id]'] ) ) {
+		$id = sanitize_text_field( $_POST['consentwow_form[id]'] );
 		$form = $form_list->find( $id );
 		$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_EDIT_SLUG . '&id=' . $id );
 		$action = 'edit';
@@ -422,13 +426,54 @@ function consentwow_form_post_action() {
 		$action = 'add';
 	}
 
-	$form['form_name']    = consentwow_sanitize_required_input( $fields['form_name'], 'Form Name is required.', $redirect_url );
-	$form['form_id']      = consentwow_sanitize_required_input( $fields['form_id'], 'Form ID is required.', $redirect_url );
-	$form['email']        = consentwow_sanitize_required_input( $fields['email'], 'Email is required.', $redirect_url );
-	$form['first_name']   = consentwow_sanitize_nullable_input( $fields['first_name'] );
-	$form['last_name']    = consentwow_sanitize_nullable_input( $fields['last_name'] );
-	$form['phone_number'] = consentwow_sanitize_nullable_input( $fields['phone_number'] );
-	$form['consents']     = consentwow_sanitize_consents_input( $fields['consents'] );
+	if ( isset( $_POST['consentwow_form[form_name]'] ) ) {
+		$form['form_name'] = consentwow_sanitize_required_input(
+			$_POST['consentwow_form[form_name]'],
+			'Form Name is required.',
+			$redirect_url,
+		);
+	}
+
+	if ( isset( $_POST['consentwow_form[form_id]'] ) ) {
+		$form['form_id'] = consentwow_sanitize_required_input(
+			$_POST['consentwow_form[form_id]'],
+			'Form ID is required.',
+			$redirect_url,
+		);
+	}
+
+	if ( isset( $_POST['consentwow_form[email]'] ) ) {
+		$form['email'] = consentwow_sanitize_required_input(
+			$_POST['consentwow_form[email]'],
+			'Email is required.',
+			$redirect_url,
+		);
+	}
+
+	if ( isset( $_POST['consentwow_form[first_name]'] ) ) {
+		$form['first_name'] = consentwow_sanitize_nullable_input(
+			$_POST['consentwow_form[first_name]'],
+		);
+	}
+
+	if ( isset( $_POST['consentwow_form[last_name]'] ) ) {
+		$form['last_name'] = consentwow_sanitize_nullable_input(
+			$_POST['consentwow_form[last_name]'],
+		);
+	}
+
+	if ( isset( $_POST['consentwow_form[phone_number]'] ) ) {
+		$form['phone_number'] = consentwow_sanitize_nullable_input(
+			$_POST['consentwow_form[phone_number]'],
+		);
+	}
+
+	if ( isset( $_POST['consentwow_form[consents]'] ) ) {
+		$form['consents'] = consentwow_sanitize_consents_input(
+			$_POST['consentwow_form[consents]'],
+		);
+	}
+
 	$form['updated_date'] = time();
 
 	if ( $action === 'add' ) {
@@ -456,7 +501,7 @@ function consentwow_form_post_action() {
  * @return mixed A sanitized value of required input.
  */
 function consentwow_sanitize_required_input( $value, $error_message, $redirect_url ) {
-	if ( isset( $value ) && ! empty( $value ) ) {
+	if ( ! empty( $value ) ) {
 		return sanitize_text_field( $value );
 	} else {
 		consentwow_form_add_settings_notice(
@@ -474,7 +519,7 @@ function consentwow_sanitize_required_input( $value, $error_message, $redirect_u
  * @return mixed A sanitized value or a null.
  */
 function consentwow_sanitize_nullable_input( $value ) {
-	if ( isset( $value ) && ! empty( $value ) ) {
+	if ( ! empty( $value ) ) {
 		return sanitize_text_field( $value );
 	} else {
 		return null;
@@ -555,14 +600,37 @@ function consentwow_form_delete_action() {
 function consentwow_form_bulk_action_delete_all_action() {
 	$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_LIST_SLUG );
 
-	if ( isset( $_REQUEST['consentwow_forms'] ) && empty( $_REQUEST['consentwow_forms'] ) ) {
+	if ( ! isset( $_REQUEST['consentwow_forms'] ) || empty( $_REQUEST['consentwow_forms'] ) ) {
 		consentwow_form_add_settings_notice(
 			'You must select at least 1 form to be deleted.',
 			$redirect_url,
 		);
-	}
+	} else {
+		$sanitized_form_ids = consentwow_sanitize_form_ids(
+			$_REQUEST['consentwow_forms'],
+			$redirect_url,
+		);
 
-	$form_ids = $_REQUEST['consentwow_forms'];
+		$form_list = new Consent_Wow_Form_List();
+		$form_list->delete_many( $sanitized_form_ids );
+
+		consentwow_form_add_settings_notice(
+			'Delete form(s) successfully',
+			$redirect_url,
+			$type = 'success',
+		);
+	}
+}
+
+/**
+ * Sanitize form id list from query string. If param is not an array, set error
+ * notice and redirect to given url.
+ *
+ * @param array  $form_ids     Form id list from query string
+ * @param string $redirect_url A Redirect URL when an error occurs
+ */
+function consentwow_sanitize_form_ids( $form_ids, $redirect_url ) {
+	$sanitized_form_ids = array();
 
 	if ( ! is_array( $form_ids ) ) {
 		consentwow_form_add_settings_notice(
@@ -571,7 +639,6 @@ function consentwow_form_bulk_action_delete_all_action() {
 		);
 	}
 
-	$sanitized_form_ids = array();
 	foreach ( $form_ids as $form_id ) {
 		$sanitized_form_id = sanitize_text_field( $form_id );
 
@@ -580,14 +647,7 @@ function consentwow_form_bulk_action_delete_all_action() {
 		}
 	}
 
-	$form_list = new Consent_Wow_Form_List();
-	$form_list->delete_many( $sanitized_form_ids );
-
-	consentwow_form_add_settings_notice(
-		'Delete form(s) successfully',
-		$redirect_url,
-		$type = 'success',
-	);
+	return $sanitized_form_ids;
 }
 
 /**

@@ -153,13 +153,13 @@ class Consent_Wow_Form_List_Table extends WP_List_Table {
    */
   private function sort_data( $a, $b ) {
     if ( isset( $_GET['orderby'] ) && in_array( $_GET['orderby'], array_keys( $this->get_sortable_columns() ) ) ) {
-      $orderby = $_GET['orderby'];
+      $orderby = sanitize_text_field( $_GET['orderby'] );
     } else {
       $orderby = 'id';
     }
 
     if ( isset( $_GET['order'] ) && in_array( $_GET['order'], array( 'asc', 'desc' ) ) ) {
-      $order = $_GET['order'];
+      $order = sanitize_text_field( $_GET['order'] );
     } else {
       $order = 'asc';
     }
