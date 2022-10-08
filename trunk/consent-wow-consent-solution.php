@@ -236,7 +236,7 @@ function consentwow_add_form_list_page() {
 	 */
 	function consentwow_form_list_handle_bulk_action() {
 		if ( isset( $_REQUEST['_wp_http_referer'] ) ) {
-			$referer = $_REQUEST['_wp_http_referer'];
+			$referer = sanitize_url( $_REQUEST['_wp_http_referer'] );
 		} else {
 			$referer = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_LIST_SLUG );
 		}
