@@ -91,6 +91,10 @@ class Consent_Wow_Form_List {
    */
   public function find( $id ) {
     $index = array_search( $id, array_column( $this->forms, 'id' ) );
-    return $this->forms[ $index ];
+    if ( $index === false ) {
+      return null;
+    } else {
+      return $this->forms[ $index ];
+    }
   }
 }
