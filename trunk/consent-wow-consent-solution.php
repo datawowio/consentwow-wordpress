@@ -403,83 +403,18 @@ function consentwow_form_post_action() {
 	$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_NEW_SLUG );
 
 	if ( ! isset( $_POST['consentwow_form'] ) || empty( $_POST['consentwow_form'] ) || ! is_array( $_POST['consentwow_form'] ) ) {
-		consentwow_form_add_settings_notice(
-			'Invalid Form Data.',
-			$redirect_url,
-		);
+		consentwow_form_add_settings_notice( 'Invalid Form Data.', $redirect_url );
 	}
 
-	if ( isset( $_POST['consentwow_form[id]'] ) ) {
-		$id = sanitize_text_field( $_POST['consentwow_form[id]'] );
-		$form = $form_list->find( $id );
-		$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_EDIT_SLUG . '&id=' . $id );
-		$action = 'edit';
-
-		if ( ! isset( $form ) ) {
-			consentwow_form_add_settings_notice(
-				'Invalid ID.',
-				$redirect_url,
-			);
-		}
-	} else {
-		$form = array();
-		$action = 'add';
-	}
-
-	if ( isset( $_POST['consentwow_form[form_name]'] ) ) {
-		$form['form_name'] = consentwow_sanitize_required_input(
-			$_POST['consentwow_form[form_name]'],
-			'Form Name is required.',
-			$redirect_url,
-		);
-	}
-
-	if ( isset( $_POST['consentwow_form[form_id]'] ) ) {
-		$form['form_id'] = consentwow_sanitize_required_input(
-			$_POST['consentwow_form[form_id]'],
-			'Form ID is required.',
-			$redirect_url,
-		);
-	}
-
-	if ( isset( $_POST['consentwow_form[email]'] ) ) {
-		$form['email'] = consentwow_sanitize_required_input(
-			$_POST['consentwow_form[email]'],
-			'Email is required.',
-			$redirect_url,
-		);
-	}
-
-	if ( isset( $_POST['consentwow_form[first_name]'] ) ) {
-		$form['first_name'] = consentwow_sanitize_nullable_input(
-			$_POST['consentwow_form[first_name]'],
-		);
-	}
-
-	if ( isset( $_POST['consentwow_form[last_name]'] ) ) {
-		$form['last_name'] = consentwow_sanitize_nullable_input(
-			$_POST['consentwow_form[last_name]'],
-		);
-	}
-
-	if ( isset( $_POST['consentwow_form[phone_number]'] ) ) {
-		$form['phone_number'] = consentwow_sanitize_nullable_input(
-			$_POST['consentwow_form[phone_number]'],
-		);
-	}
-
-	if ( isset( $_POST['consentwow_form[consents]'] ) ) {
-		$form['consents'] = consentwow_sanitize_consents_input(
-			$_POST['consentwow_form[consents]'],
-		);
-	}
-
+	$form = consentwow_sanitize_form_post_data( $_POST['consentwow_form'], $redirect_url );
 	$form['updated_date'] = time();
 
-	if ( $action === 'add' ) {
-		$form_list->add( $form );
+	if ( isset( $form['id'] ) ) {
+		$action = 'edit';
+		$form_list->update( $form['id'], $form );
 	} else {
-		$form_list->update( $id, $form );
+		$action = 'add';
+		$form_list->add( $form );
 	}
 
 	$upcase_action = ucwords( $action );
@@ -488,6 +423,75 @@ function consentwow_form_post_action() {
 		admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_LIST_SLUG ),
 		$type = 'success',
 	);
+}
+
+/**
+ * Sanitize form post data that it is an array and not empty.
+ *
+ * @param array  $fields       POST data from form-page
+ * @param string $redirect_url A Redirect URL when an error occurs
+ *
+ * @return string Sanitized form data
+ */
+function consentwow_sanitize_form_post_data( $fields, $redirect_url ) {
+	if ( ! is_array( $fields ) || empty( $fields ) ) {
+		consentwow_form_add_settings_notice(
+			'Invalid Form Data.',
+			$redirect_url,
+		);
+	}
+
+	if ( isset( $fields['id'] ) ) {
+		$id = sanitize_text_field( $fields['id'] );
+		$form_list = new Consent_Wow_Form_List();
+		$form = $form_list->find( $id );
+		$redirect_url = admin_url( 'admin.php?page=' . WP_CONSENTWOW_FORM_EDIT_SLUG . '&id=' . $id );
+
+		if ( is_null( $form ) ) {
+			consentwow_form_add_settings_notice(
+				'Invalid ID.',
+				$redirect_url,
+			);
+		}
+	} else {
+		$form = array();
+	}
+
+	if ( isset( $fields['form_name'] ) ) {
+		$form['form_name'] = consentwow_sanitize_required_input( $fields['form_name'], 'Form Name is required.', $redirect_url );
+	} else {
+		consentwow_form_add_settings_notice( 'Form Name is required.', $redirect_url );
+	}
+
+	if ( isset( $fields['form_id'] ) ) {
+		$form['form_id'] = consentwow_sanitize_required_input( $fields['form_id'], 'Form ID is required.', $redirect_url );
+	} else {
+		consentwow_form_add_settings_notice( 'Form ID is required.', $redirect_url );
+	}
+
+	if ( isset( $fields['email'] ) ) {
+		$form['email'] = consentwow_sanitize_required_input( $fields['email'], 'Email is required.', $redirect_url );
+	} else {
+		consentwow_form_add_settings_notice( 'Email is required.', $redirect_url );
+	}
+
+	if ( isset( $fields['first_name'] ) ) {
+		$form['first_name'] = consentwow_sanitize_nullable_input( $fields['first_name'] );
+	}
+
+	if ( isset( $fields['last_name'] ) ) {
+		$form['last_name'] = consentwow_sanitize_nullable_input( $fields['last_name'] );
+	}
+
+	if ( isset( $fields['phone_number'] ) ) {
+		$form['phone_number'] = consentwow_sanitize_nullable_input( $fields['phone_number'] );
+	}
+
+	if ( isset( $fields['consents'] ) ) {
+		$form['consents'] = consentwow_sanitize_consents_input( $fields['consents'] );
+	}
+
+	return $form;
 }
 
 /**
