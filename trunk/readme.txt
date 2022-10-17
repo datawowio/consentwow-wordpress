@@ -4,7 +4,7 @@ Tags: consent, PDPA
 Requires at least: 4.9.16
 Tested up to: 6.0.2
 Requires PHP: 7.4.21
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GNU General Public License v3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
