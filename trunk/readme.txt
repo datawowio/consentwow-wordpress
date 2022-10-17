@@ -33,7 +33,7 @@ Consent Wow ช่วยให้คุณปฏิบัติตาม PDPA �
 - ระบบการจัดการความยินยอมแยกตามวัตถุประสงค์ที่ออกแบบให้ใช้งานง่าย
 - รองรับการใช้งานทั้งแบบ API และ URL
 
-คุณสามารถศึกษาเพิ่มเติมเกี่ยวกับ Consent Wow ได้ที่ https://consentwow.com/
+คุณสามารถศึกษาเพิ่มเติมเกี่ยวกับ Consent Wow ได้ที่ [https://consentwow.com/](https://consentwow.com/)
 
 == Installation ==
 Installation Guide
@@ -43,7 +43,7 @@ Installation Guide
 - Paste API Key from Consent Wow (WordPress consent source) to connect Consent Wow with your consent source.
 - Map your form fields and consent purpose by provided form.
 
-Should you have any inquiries, please contact our support via Live Chat on https://consentwow.com/
+Should you have any inquiries, please contact our support via Live Chat on [https://consentwow.com/](https://consentwow.com/)
 
 วิธีการติดตั้ง
 
@@ -52,7 +52,7 @@ Should you have any inquiries, please contact our support via Live Chat on https
 - กรอก API key จาก Consent Wow (แหล่งที่มาความยินยอม: WordPress) เพื่อเชื่อมต่อ
 - เชื่อมโยง field และความยินยอมบนเว็บฟอร์มของคุณกับ Consent Wow ด้วยฟอร์มที่จัดไว้ให้
 
-หากมีข้อสงสัยเพิ่มเติม สามารถติดต่อทีม Customer Support ได้ที่ Live Chat บน https://consentwow.com/
+หากมีข้อสงสัยเพิ่มเติม สามารถติดต่อทีม Customer Support ได้ที่ Live Chat บน [https://consentwow.com/](https://consentwow.com/)
 
 == Frequently Asked Questions ==
 = Q: หากไม่มีการจัดการความยินยอมจะถือว่าผิดกฎหมายหรือไม่ ? =
