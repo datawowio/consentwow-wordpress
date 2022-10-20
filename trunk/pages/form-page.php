@@ -20,7 +20,7 @@ if ( isset( $_GET['id'] ) && ! empty( $_GET['id'] ) ) {
 	$form = $form_list->find( $id );
 }
 
-if ( is_null( $form ) ) {
+if ( ! isset( $form ) || is_null( $form ) ) {
 	$action = 'add';
 	$title = __( 'Create a new Form', 'consent-wow-consent-solution' );
 	$button = __( 'เพิ่มฟอร์ม', 'consent-wow-consent-solution' );
